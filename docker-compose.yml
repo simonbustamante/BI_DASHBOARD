@@ -1,0 +1,70 @@
+version: '3.7'
+
+services:
+  nginx: 
+    build : nginx 
+    ports : 
+      - "80:80" 
+      - "443:443"
+    volumes: 
+      - './symfony/:/var/www/symfony'
+  php:
+    build: ./docker/php
+    ports: ['9000:9000']
+    volumes: 
+      - './symfony/:/var/www/symfony'
+  database:
+    image: mongo
+    ports:
+      - '27017-27019:27017-27019'
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME=main
+    #   - MONGO_INITDB_ROOT_PASSWORD=main
+    # volumes:
+    #   - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    #   - ./mongo-volume:/data/db
+  # redis:
+  #       image: redis:6-alpine
+  #       ports: 
+  #         - "6379:6379"
+  # database:
+  #       image: postgres:13-alpine
+  #       environment:
+  #           POSTGRES_USER: main
+  #           POSTGRES_PASSWORD: main
+  #           POSTGRES_DB: main
+  #       ports: 
+  #         - "5432:5432"
+  # node-hook:
+  #       build: ./symfony/hook/
+  #       image: hook:mayani
+  #       container_name: hook-service
+  #       restart: on-failure
+  #       ports: 
+  #           - 3000:3000
+  #       volumes: 
+  #           - ./symfony/hook:/app/hook
+  #           - ./symfony/public/images:/app/public/images
+  #           #- /etc/ssl/certs/ca-certificates.crt:/app/ca-certificates.crt
+  # node-hook-voter-id:
+  #       build: ./symfony/hook-voter-id/
+  #       image: hook:mayani
+  #       container_name: hook-service-voter-id
+  #       restart: on-failure
+  #       ports: 
+  #           - 3001:3000
+  #       volumes: 
+  #           - ./symfony/hook-voter-id:/app/hook
+  #           - ./symfony/public/images:/app/public/images
+  #           #- /etc/ssl/certs/ca-certificates.crt:/app/ca-certificates.crt
+  # node-hook-voting-credential:
+  #       build: ./symfony/hook/
+  #       image: hook:mayani
+  #       container_name: hook-service-voting-credential
+  #       restart: on-failure
+  #       ports: 
+  #           - 3002:3000
+  #       volumes: 
+  #           - ./symfony/hook-voting-credential:/app/hook
+  #           - ./symfony/public/images:/app/public/images
+  #           #- /etc/ssl/certs/ca-certificates.crt:/app/ca-certificates.crt
