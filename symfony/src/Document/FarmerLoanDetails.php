@@ -5,7 +5,7 @@ namespace App\Document;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Doctrine\ODM\MongoDB\Types\Type;
 
-#[MongoDB\Document(db: "farmers", collection: "farmer_profile")]
+#[MongoDB\Document(db: "farmers", collection: "farmer_loan_details")]
 class FarmerLoanDetails
 {
     #[MongoDB\Id]
