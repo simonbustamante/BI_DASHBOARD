@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Document\FarmerBalance;
-use App\Document\FarmerProfile;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +15,7 @@ class FarmerBalanceImporterController extends AbstractController
     public function index(DocumentManager $documentManager): Response
     {
         $cursor = $documentManager
-            ->getDocumentCollection(FarmerProfile::class)
+            ->getDocumentCollection(FarmerBalance::class)
             ->find()
             ;
 
@@ -37,7 +36,7 @@ class FarmerBalanceImporterController extends AbstractController
         {
             $fields = explode(",", $singleField);
             //dump($fields);die();
-            if($fields[0] != "farmer_id")
+            if($fields[0] != "farmer_id" && $fields[0]!="")
             {
                 //dump($fields);die(); 
                 $farmerBalance = new FarmerBalance();

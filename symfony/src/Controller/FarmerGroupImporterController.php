@@ -36,7 +36,7 @@ class FarmerGroupImporterController extends AbstractController
         {
             $fields = explode(",", $singleField);
             //dump($fields);die();
-            if($fields[0] != "farmer_id")
+            if($fields[0] != "farmer_id" && $fields[0]!="")
             {
                 //dump($fields);die(); 
                 $farmer = new FarmerGroup();

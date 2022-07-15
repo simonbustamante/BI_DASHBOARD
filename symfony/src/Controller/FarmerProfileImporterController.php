@@ -35,7 +35,7 @@ class FarmerProfileImporterController extends AbstractController
         $count = 0;
         foreach($rows as $value)
         {
-            if($value != "farmer_id")
+            if($value != "farmer_id" && $value != "")
             {
                 $farmerProfile = new FarmerProfile();
                 $farmerProfile->setFarmerId($value);

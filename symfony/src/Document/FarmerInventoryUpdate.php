@@ -13,16 +13,19 @@ class FarmerInventoryUpdate
 
     #[MongoDB\Field(type: Type::STRING)]
     private string $farmerId;
-
-    private $farmer_id;
-    private $inventory_update_id;
-    private $inventory_id;
-    private $quantity_kg;
+    #[MongoDB\Field(type: Type::STRING)]
+    private $inventoryupdateid;
+    #[MongoDB\Field(type: Type::STRING)]
+    private $inventoryid;
+    #[MongoDB\Field(type: Type::STRING)]
+    private $quantitykg;
+    #[MongoDB\Field(type: Type::STRING)]
     private $credit;
+    #[MongoDB\Field(type: Type::STRING)]
     private $date;
 
     /**
-     * Get the value of farmer_id
+     * Get the value of farmerid
      */ 
     public function getFarmerId()
     {
@@ -30,7 +33,7 @@ class FarmerInventoryUpdate
     }
 
     /**
-     * Set the value of farmer_id
+     * Set the value of farmerid
      *
      * @return  self
      */ 
@@ -61,81 +64,61 @@ class FarmerInventoryUpdate
     }
 
     /**
-     * Get the value of farmer_id
+     * Get the value of inventoryupdateid
      */ 
-    public function getFarmer_id()
+    public function getInventoryupdateid()
     {
-        return $this->farmer_id;
+        return $this->inventoryupdateid;
     }
 
     /**
-     * Set the value of farmer_id
+     * Set the value of inventoryupdateid
      *
      * @return  self
      */ 
-    public function setFarmer_id($farmer_id)
+    public function setInventoryupdateid($inventoryupdateid)
     {
-        $this->farmer_id = $farmer_id;
+        $this->inventoryupdateid = $inventoryupdateid;
 
         return $this;
     }
 
     /**
-     * Get the value of inventory_update_id
+     * Get the value of inventoryid
      */ 
-    public function getInventory_update_id()
+    public function getInventoryid()
     {
-        return $this->inventory_update_id;
+        return $this->inventoryid;
     }
 
     /**
-     * Set the value of inventory_update_id
+     * Set the value of inventoryid
      *
      * @return  self
      */ 
-    public function setInventory_update_id($inventory_update_id)
+    public function setInventoryid($inventoryid)
     {
-        $this->inventory_update_id = $inventory_update_id;
+        $this->inventoryid = $inventoryid;
 
         return $this;
     }
 
     /**
-     * Get the value of inventory_id
+     * Get the value of quantitykg
      */ 
-    public function getInventory_id()
+    public function getQuantitykg()
     {
-        return $this->inventory_id;
+        return $this->quantitykg;
     }
 
     /**
-     * Set the value of inventory_id
+     * Set the value of quantitykg
      *
      * @return  self
      */ 
-    public function setInventory_id($inventory_id)
+    public function setQuantitykg($quantitykg)
     {
-        $this->inventory_id = $inventory_id;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of quantity_kg
-     */ 
-    public function getQuantity_kg()
-    {
-        return $this->quantity_kg;
-    }
-
-    /**
-     * Set the value of quantity_kg
-     *
-     * @return  self
-     */ 
-    public function setQuantity_kg($quantity_kg)
-    {
-        $this->quantity_kg = $quantity_kg;
+        $this->quantitykg = $quantitykg;
 
         return $this;
     }
