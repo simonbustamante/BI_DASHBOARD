@@ -11,7 +11,7 @@ class FarmerInformation
     #[MongoDB\Id]
     private string $id;
 
-    #[MongoDB\Field(type: Type::STRING)]
+    #[MongoDB\Field(type: Type::INT)]
     private string $farmerId;
 
     #[MongoDB\Field(type: Type::STRING)]

@@ -1,0 +1,23 @@
+{{ form_start(form)}} {# , {'action': path('app_dashboard'), 'method': 'POST'}) }} #}
+    {#{ form_widget(form) }#}
+    <div class="btn-group me-2"> 
+        {{ form_row(form.farmer_id) }}
+    </div>
+    <div class="btn-group me-2">
+        <label class="">Start invoice date: </label>  
+    </div>
+    <div class="btn-group me-2"> 
+    {{ form_row(form.start_invoice_date) }}
+    </div>
+    <div class="btn-group me-2">
+        <label>End invoice date: </label>  
+    </div>
+    <div class="btn-group me-2"> 
+    {{ form_row(form.end_invoice_date) }}
+    </div>
+    <div class="btn-group me-2">
+        {# <button type="button" class="btn btn-sm btn-outline-secondary">Share</button> #}
+        {# <button type="button" class="btn btn-sm btn-outline-secondary">Export</button> #}
+        <input type="submit" id="submit" class="btn btn-sm btn-outline-secondary"></input>
+    </div>
+{{ form_end(form) }}

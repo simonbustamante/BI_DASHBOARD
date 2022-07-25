@@ -1,0 +1,49 @@
+
+<table class="table table-striped table-sm">
+<thead>
+        <tr>
+            <th>
+                {{ knp_pagination_sortable(data_table, 'Farmer Id', 'farmerId') }}
+            </th>
+            <th {% if data_table.isSorted('idOrder') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(data_table, 'Order Id', 'idOrder') }}
+            </th>
+            <th {% if data_table.isSorted('invoiceDate') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(data_table, 'Invoice Date', 'invoiceDate') }}
+            </th>
+            <th {% if data_table.isSorted('productName') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(data_table, 'Product Name', 'productName') }}
+            </th>
+            <th {% if data_table.isSorted('productQuantity') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(data_table, 'Product Amount', 'productQuantity') }}
+            </th>
+            <th {% if data_table.isSorted('productPrice') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(data_table, 'Produt Price', 'productPrice') }}
+            </th>
+            <th>
+                Total
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for data in data_table %}
+        <tr>
+            <td>{{data.farmerId}}</td>
+            <td>{{data.idOrder}}</td>
+            <td>{{data.invoiceDate|date('Y-m-d')}}</td>
+            <td>{{data.productName}}</td>
+            <td>{{data.productQuantity}}</td>
+            <td>${{data.productPrice|round(2,'floor')}}</td>
+            <td>${{data.productPrice * data.productQuantity}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="container">
+    <div class="row">
+        <div class="d-flex align-items-center justify-content-center">
+            {{ knp_pagination_render(data_table) }}
+        </div>
+    </div>
+</div>

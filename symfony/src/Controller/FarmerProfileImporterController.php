@@ -39,6 +39,7 @@ class FarmerProfileImporterController extends AbstractController
             {
                 $farmerProfile = new FarmerProfile();
                 $farmerProfile->setFarmerId($value);
+                //dump($farmerProfile);die();
                 $documentManager->persist($farmerProfile);
                 $count++;
             }

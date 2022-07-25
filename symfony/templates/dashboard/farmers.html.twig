@@ -1,0 +1,26 @@
+{# <input class="btn btn-sm btn-outline-secondary" list="datalistOptions" name="farmerDataList" id="farmerDataList" placeholder="Type to find a farmer">
+    <datalist id="datalistOptions">                   
+        {% for farmer in farmer_information %}
+            {% if farmer.farmerId == selected %}
+                1
+                <option value="{{farmer.farmerId}}" selected>{{farmer.name}} {{farmer.surname}}</option>
+            {% else %}
+                2
+                <option value="{{farmer.farmerId}}">{{farmer.name}} {{farmer.surname}}</option>
+            {% endif %}
+            
+        {% endfor %}
+    </datalist> #}
+    
+    <select class="btn btn-sm btn-outline-secondary" name="farmerDataList" id="farmerDataList" placeholder="Type to find a farmer">
+        <option value="">Select Farmer... </option>
+        {% for farmer in farmer_information %}
+            {% if farmer.farmerId == select %}
+                <option value="{{farmer.farmerId}}" selected">{{farmer.name}} {{farmer.surname}}</option>
+            {% else %}
+                <option value="{{farmer.farmerId}}">{{farmer.name}} {{farmer.surname}}</option>
+            {% endif %}
+                
+        {% endfor %}
+    </select>
+    

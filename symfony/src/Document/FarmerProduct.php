@@ -14,29 +14,29 @@ class FarmerProduct
     #[MongoDB\Field(type: Type::STRING)]
     private string $farmerId;
     #[MongoDB\Field(type: Type::STRING)]
-    private $inventory_id;
+    private $inventoryId;
     #[MongoDB\Field(type: Type::STRING)]
-    private $product_id;
+    private $productId;
     #[MongoDB\Field(type: Type::STRING)]
-    private $inventory_date;
+    private $inventoryDate;
     #[MongoDB\Field(type: Type::STRING)]
-    private $inventory_total_credit;
+    private $inventoryTotalCredit;
     #[MongoDB\Field(type: Type::STRING)]
-    private $inventory_total_kg;
+    private $inventoryTotalKg;
     #[MongoDB\Field(type: Type::STRING)]
-    private $inventory_description;
+    private $inventoryDescription;
     #[MongoDB\Field(type: Type::STRING)]
-    private $product_name;
+    private $productName;
     #[MongoDB\Field(type: Type::STRING)]
-    private $price_per_kg;
+    private $pricePerKg;
     #[MongoDB\Field(type: Type::STRING)]
-    private $kg_per_month;
+    private $kgPerMonth;
     #[MongoDB\Field(type: Type::STRING)]
-    private $activity_id;
+    private $activityId;
     #[MongoDB\Field(type: Type::STRING)]
-    private $activity_name;
+    private $activityName;
     #[MongoDB\Field(type: Type::STRING)]
-    private $activity_description;
+    private $activityDescription;
     
 
     /**
@@ -78,242 +78,244 @@ class FarmerProduct
         return $this;
     }
 
+   
+
     /**
-     * Get the value of inventory_id
+     * Get the value of inventoryId
      */ 
-    public function getInventory_id()
+    public function getInventoryId()
     {
-        return $this->inventory_id;
+        return $this->inventoryId;
     }
 
     /**
-     * Set the value of inventory_id
+     * Set the value of inventoryId
      *
      * @return  self
      */ 
-    public function setInventory_id($inventory_id)
+    public function setInventoryId($inventoryId)
     {
-        $this->inventory_id = $inventory_id;
+        $this->inventoryId = $inventoryId;
 
         return $this;
     }
 
     /**
-     * Get the value of product_id
+     * Get the value of productId
      */ 
-    public function getProduct_id()
+    public function getProductId()
     {
-        return $this->product_id;
+        return $this->productId;
     }
 
     /**
-     * Set the value of product_id
+     * Set the value of productId
      *
      * @return  self
      */ 
-    public function setProduct_id($product_id)
+    public function setProductId($productId)
     {
-        $this->product_id = $product_id;
+        $this->productId = $productId;
 
         return $this;
     }
 
     /**
-     * Get the value of inventory_date
+     * Get the value of inventoryDate
      */ 
-    public function getInventory_date()
+    public function getInventoryDate()
     {
-        return $this->inventory_date;
+        return $this->inventoryDate;
     }
 
     /**
-     * Set the value of inventory_date
+     * Set the value of inventoryDate
      *
      * @return  self
      */ 
-    public function setInventory_date($inventory_date)
+    public function setInventoryDate($inventoryDate)
     {
-        $this->inventory_date = $inventory_date;
+        $this->inventoryDate = $inventoryDate;
 
         return $this;
     }
 
     /**
-     * Get the value of inventory_total_credit
+     * Get the value of inventoryTotalCredit
      */ 
-    public function getInventory_total_credit()
+    public function getInventoryTotalCredit()
     {
-        return $this->inventory_total_credit;
+        return $this->inventoryTotalCredit;
     }
 
     /**
-     * Set the value of inventory_total_credit
+     * Set the value of inventoryTotalCredit
      *
      * @return  self
      */ 
-    public function setInventory_total_credit($inventory_total_credit)
+    public function setInventoryTotalCredit($inventoryTotalCredit)
     {
-        $this->inventory_total_credit = $inventory_total_credit;
+        $this->inventoryTotalCredit = $inventoryTotalCredit;
 
         return $this;
     }
 
     /**
-     * Get the value of inventory_total_kg
+     * Get the value of inventoryTotalKg
      */ 
-    public function getInventory_total_kg()
+    public function getInventoryTotalKg()
     {
-        return $this->inventory_total_kg;
+        return $this->inventoryTotalKg;
     }
 
     /**
-     * Set the value of inventory_total_kg
+     * Set the value of inventoryTotalKg
      *
      * @return  self
      */ 
-    public function setInventory_total_kg($inventory_total_kg)
+    public function setInventoryTotalKg($inventoryTotalKg)
     {
-        $this->inventory_total_kg = $inventory_total_kg;
+        $this->inventoryTotalKg = $inventoryTotalKg;
 
         return $this;
     }
 
     /**
-     * Get the value of inventory_description
+     * Get the value of inventoryDescription
      */ 
-    public function getInventory_description()
+    public function getInventoryDescription()
     {
-        return $this->inventory_description;
+        return $this->inventoryDescription;
     }
 
     /**
-     * Set the value of inventory_description
+     * Set the value of inventoryDescription
      *
      * @return  self
      */ 
-    public function setInventory_description($inventory_description)
+    public function setInventoryDescription($inventoryDescription)
     {
-        $this->inventory_description = $inventory_description;
+        $this->inventoryDescription = $inventoryDescription;
 
         return $this;
     }
 
     /**
-     * Get the value of product_name
+     * Get the value of productName
      */ 
-    public function getProduct_name()
+    public function getProductName()
     {
-        return $this->product_name;
+        return $this->productName;
     }
 
     /**
-     * Set the value of product_name
+     * Set the value of productName
      *
      * @return  self
      */ 
-    public function setProduct_name($product_name)
+    public function setProductName($productName)
     {
-        $this->product_name = $product_name;
+        $this->productName = $productName;
 
         return $this;
     }
 
     /**
-     * Get the value of price_per_kg
+     * Get the value of pricePerKg
      */ 
-    public function getPrice_per_kg()
+    public function getPricePerKg()
     {
-        return $this->price_per_kg;
+        return $this->pricePerKg;
     }
 
     /**
-     * Set the value of price_per_kg
+     * Set the value of pricePerKg
      *
      * @return  self
      */ 
-    public function setPrice_per_kg($price_per_kg)
+    public function setPricePerKg($pricePerKg)
     {
-        $this->price_per_kg = $price_per_kg;
+        $this->pricePerKg = $pricePerKg;
 
         return $this;
     }
 
     /**
-     * Get the value of kg_per_month
+     * Get the value of kgPerMonth
      */ 
-    public function getKg_per_month()
+    public function getKgPerMonth()
     {
-        return $this->kg_per_month;
+        return $this->kgPerMonth;
     }
 
     /**
-     * Set the value of kg_per_month
+     * Set the value of kgPerMonth
      *
      * @return  self
      */ 
-    public function setKg_per_month($kg_per_month)
+    public function setKgPerMonth($kgPerMonth)
     {
-        $this->kg_per_month = $kg_per_month;
+        $this->kgPerMonth = $kgPerMonth;
 
         return $this;
     }
 
     /**
-     * Get the value of activity_id
+     * Get the value of activityId
      */ 
-    public function getActivity_id()
+    public function getActivityId()
     {
-        return $this->activity_id;
+        return $this->activityId;
     }
 
     /**
-     * Set the value of activity_id
+     * Set the value of activityId
      *
      * @return  self
      */ 
-    public function setActivity_id($activity_id)
+    public function setActivityId($activityId)
     {
-        $this->activity_id = $activity_id;
+        $this->activityId = $activityId;
 
         return $this;
     }
 
     /**
-     * Get the value of activity_name
+     * Get the value of activityName
      */ 
-    public function getActivity_name()
+    public function getActivityName()
     {
-        return $this->activity_name;
+        return $this->activityName;
     }
 
     /**
-     * Set the value of activity_name
+     * Set the value of activityName
      *
      * @return  self
      */ 
-    public function setActivity_name($activity_name)
+    public function setActivityName($activityName)
     {
-        $this->activity_name = $activity_name;
+        $this->activityName = $activityName;
 
         return $this;
     }
 
     /**
-     * Get the value of activity_description
+     * Get the value of activityDescription
      */ 
-    public function getActivity_description()
+    public function getActivityDescription()
     {
-        return $this->activity_description;
+        return $this->activityDescription;
     }
 
     /**
-     * Set the value of activity_description
+     * Set the value of activityDescription
      *
      * @return  self
      */ 
-    public function setActivity_description($activity_description)
+    public function setActivityDescription($activityDescription)
     {
-        $this->activity_description = $activity_description;
+        $this->activityDescription = $activityDescription;
 
         return $this;
     }

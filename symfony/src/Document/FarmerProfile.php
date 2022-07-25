@@ -2,6 +2,7 @@
 
 namespace App\Document;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Doctrine\ODM\MongoDB\Types\Type;
 
@@ -13,6 +14,15 @@ class FarmerProfile
 
     #[MongoDB\Field(type: Type::STRING)]
     private string $farmerId;
+
+
+    // #[MongoDB\ReferenceMany(targetDocument: "FarmerInformation", mappedBy: "FarmerProfile", orphanRemoval: true)]
+    // private string $farmerInformation;
+
+    public function __construct()
+    {
+        $this->farmerInformation = new ArrayCollection();
+    }
 
     /**
      * Get the value of farmer_id
@@ -52,4 +62,29 @@ class FarmerProfile
 
         return $this;
     }
+
+    // /**
+    //  * @return Collection|FarmerInformation[]
+    //  */
+    // public function getFarmerInformation()
+    // {
+    //     return $this->farmerInformation;
+    // }
+
+    // /**
+    //  * Set the value of farmerInformation
+    //  *
+    //  * @return  self
+    //  */ 
+    // public function addFarmerInformation(FarmerInformation $farmerInformation)
+    // {
+    //     $this->farmerInformation[] = $farmerInformation;
+
+    //     return $this;
+    // }
+
+    // public function removeFarmerInformation(FarmerInformation $farmerInformation): void
+    // {
+    //     unset($this->farmerInformation[$farmerInformation]);   
+    // }
 }

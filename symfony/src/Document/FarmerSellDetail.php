@@ -15,22 +15,22 @@ class FarmerSellDetail
     private string $farmerId;
 
     #[MongoDB\Field(type: Type::STRING)]
-    private $id_order;
+    private $idOrder;
 
     #[MongoDB\Field(type: Type::STRING)]
     private $order_reference;
 
     #[MongoDB\Field(type: Type::STRING)]
-    private $product_id;
+    private $productId;
 
     #[MongoDB\Field(type: Type::STRING)]
-    private $product_name;
+    private $productName;
+
+    #[MongoDB\Field(type: Type::INT)]
+    private $productQuantity;
 
     #[MongoDB\Field(type: Type::STRING)]
-    private $product_quantity;
-
-    #[MongoDB\Field(type: Type::STRING)]
-    private $product_price;
+    private $productPrice;
 
     #[MongoDB\Field(type: Type::STRING)]
     private $product_quantity_in_stock;
@@ -68,8 +68,8 @@ class FarmerSellDetail
     #[MongoDB\Field(type: Type::STRING)]
     private $product_supplier_reference;
 
-    #[MongoDB\Field(type: Type::STRING)]
-    private $product_weight;
+    #[MongoDB\Field(type: Type::FLOAT)]
+    private $productWeight;
 
     #[MongoDB\Field(type: Type::STRING)]
     private $total_discounts;
@@ -221,19 +221,19 @@ class FarmerSellDetail
     #[MongoDB\Field(type: Type::STRING)]
     private $delivery_number;
 
-    #[MongoDB\Field(type: Type::STRING)]
-    private $invoice_date;
+    #[MongoDB\Field(type: Type::DATE)]
+    private $invoiceDate;
 
-    #[MongoDB\Field(type: Type::STRING)]
+    #[MongoDB\Field(type: Type::DATE)]
     private $delivery_date;
 
-    #[MongoDB\Field(type: Type::STRING)]
+    #[MongoDB\Field(type: Type::DATE)]
     private $valid;
 
-    #[MongoDB\Field(type: Type::STRING)]
+    #[MongoDB\Field(type: Type::DATE)]
     private $date_add;
 
-    #[MongoDB\Field(type: Type::STRING)]
+    #[MongoDB\Field(type: Type::DATE)]
     private $date_upd;
 
     #[MongoDB\Field(type: Type::STRING)]
@@ -342,9 +342,9 @@ class FarmerSellDetail
     /**
      * Get the value of id_order
      */ 
-    public function getId_order()
+    public function getIdOrder()
     {
-        return $this->id_order;
+        return $this->idOrder;
     }
 
     /**
@@ -352,9 +352,9 @@ class FarmerSellDetail
      *
      * @return  self
      */ 
-    public function setId_order($id_order)
+    public function setIdOrder($idOrder)
     {
-        $this->id_order = $id_order;
+        $this->idOrder = $idOrder;
 
         return $this;
     }
@@ -382,19 +382,19 @@ class FarmerSellDetail
     /**
      * Get the value of product_id
      */ 
-    public function getProduct_id()
+    public function getProductId()
     {
-        return $this->product_id;
+        return $this->productId;
     }
 
     /**
-     * Set the value of product_id
+     * Set the value of productId
      *
      * @return  self
      */ 
-    public function setProduct_id($product_id)
+    public function setProductId($productId)
     {
-        $this->product_id = $product_id;
+        $this->productId = $productId;
 
         return $this;
     }
@@ -402,9 +402,9 @@ class FarmerSellDetail
     /**
      * Get the value of product_name
      */ 
-    public function getProduct_name()
+    public function getProductName()
     {
-        return $this->product_name;
+        return $this->productName;
     }
 
     /**
@@ -412,49 +412,49 @@ class FarmerSellDetail
      *
      * @return  self
      */ 
-    public function setProduct_name($product_name)
+    public function setProductName($productName)
     {
-        $this->product_name = $product_name;
+        $this->productName = $productName;
 
         return $this;
     }
 
     /**
-     * Get the value of product_quantity
+     * Get the value of productQuantity
      */ 
-    public function getProduct_quantity()
+    public function getProductQuantity()
     {
-        return $this->product_quantity;
+        return $this->productQuantity;
     }
 
     /**
-     * Set the value of product_quantity
+     * Set the value of productQuantity
      *
      * @return  self
      */ 
-    public function setProduct_quantity($product_quantity)
+    public function setProductQuantity($productQuantity)
     {
-        $this->product_quantity = $product_quantity;
+        $this->productQuantity = $productQuantity;
 
         return $this;
     }
 
     /**
-     * Get the value of product_price
+     * Get the value of productPrice
      */ 
-    public function getProduct_price()
+    public function getProductPrice()
     {
-        return $this->product_price;
+        return $this->productPrice;
     }
 
     /**
-     * Set the value of product_price
+     * Set the value of productPrice
      *
      * @return  self
      */ 
-    public function setProduct_price($product_price)
+    public function setProductPrice($productPrice)
     {
-        $this->product_price = $product_price;
+        $this->productPrice = $productPrice;
 
         return $this;
     }
@@ -700,21 +700,21 @@ class FarmerSellDetail
     }
 
     /**
-     * Get the value of product_weight
+     * Get the value of productWeight
      */ 
-    public function getProduct_weight()
+    public function getProductWeight()
     {
-        return $this->product_weight;
+        return $this->productWeight;
     }
 
     /**
-     * Set the value of product_weight
+     * Set the value of productWeight
      *
      * @return  self
      */ 
-    public function setProduct_weight($product_weight)
+    public function setProductWeight($productWeight)
     {
-        $this->product_weight = $product_weight;
+        $this->productWeight = $productWeight;
 
         return $this;
     }
@@ -1720,21 +1720,21 @@ class FarmerSellDetail
     }
 
     /**
-     * Get the value of invoice_date
+     * Get the value of invoiceDate
      */ 
-    public function getInvoice_date()
+    public function getInvoiceDate()
     {
-        return $this->invoice_date;
+        return $this->invoiceDate;
     }
 
     /**
-     * Set the value of invoice_date
+     * Set the value of invoiceDate
      *
      * @return  self
      */ 
-    public function setInvoice_date($invoice_date)
+    public function setInvoiceDate($invoiceDate)
     {
-        $this->invoice_date = $invoice_date;
+        $this->invoiceDate = $invoiceDate;
 
         return $this;
     }

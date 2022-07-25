@@ -8,13 +8,23 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/mongodb-odm-bundle": "^4.4",
+        "knplabs/knp-paginator-bundle": "^5.8",
+        "sensio/framework-extra-bundle": "^6.2",
         "symfony/console": "6.0.*",
         "symfony/dotenv": "6.0.*",
         "symfony/flex": "^2",
+        "symfony/form": "6.0.*",
         "symfony/framework-bundle": "6.0.*",
-        "symfony/maker-bundle": "^1.36",
+        "symfony/maker-bundle": "^1.44",
+        "symfony/monolog-bundle": "^3.8",
         "symfony/runtime": "6.0.*",
-        "symfony/yaml": "6.0.*"
+        "symfony/twig-bundle": "6.0.*",
+        "symfony/ux-chartjs": "^2.3",
+        "symfony/validator": "6.0.*",
+        "symfony/webpack-encore-bundle": "^1.15",
+        "symfony/yaml": "6.0.*",
+        "twig/extra-bundle": "^2.12|^3.0",
+        "twig/twig": "^2.12|^3.0"
     },
     "config": {
         "allow-plugins": {
@@ -66,5 +76,10 @@
             "allow-contrib": "true",
             "require": "6.0.*"
         }
+    },
+    "require-dev": {
+        "symfony/debug-bundle": "6.0.*",
+        "symfony/stopwatch": "6.0.*",
+        "symfony/web-profiler-bundle": "6.0.*"
     }
 }
