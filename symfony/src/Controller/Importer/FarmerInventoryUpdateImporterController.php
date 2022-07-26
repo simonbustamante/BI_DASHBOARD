@@ -1,56 +1,55 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Importer;
 
-use App\Document\FarmerLoanPayment;
+use App\Document\FarmerInventoryUpdate;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class FarmerLoanPaymentImporterController extends AbstractController
+class FarmerInventoryUpdateImporterController extends AbstractController
 {
-    #[Route('/farmer-loan-details', name: 'farmer-loan-details')]
+    #[Route('/farmer-inventory-update', name: 'farmer-inventory-update')]
     public function index(DocumentManager $documentManager): Response
     {
         $cursor = $documentManager
-            ->getDocumentCollection(FarmerLoanPayment::class)
+            ->getDocumentCollection(FarmerInventoryUpdate::class)
             ->find()
             ;
 
         return $this->json([
-            'farmer_loan_payment' => $cursor->toArray(),
+            'farmer_inventory_update' => $cursor->toArray(),
         ]);
     }
 
 
-    #[Route('/import-farmer-loan-payment', name: 'iflp', methods: ['POST'])]
-    public function importFarmerLoanPayment(Request $request, DocumentManager $documentManager): Response
+    #[Route('/import-farmer-inventory-update', name: 'ifiu', methods: ['POST'])]
+    public function importFarmerInvUpd(Request $request, DocumentManager $documentManager): Response
     {
-        
+        //dump(file_get_contents($request->files->get('csv')));die();
         $content = file_get_contents($request->files->get('csv'));
         $rows = explode("\n", $content);
         $count = 0;
         foreach($rows as $singleField)
         {
             $fields = explode(",", $singleField);
-            //dump($fields);die();
             if($fields[0] != "farmer_id" && $fields[0]!="")
             {
-                //dump($fields);die(); 
-                $farmer = new FarmerLoanPayment();
+                $farmer = new FarmerInventoryUpdate();
                 $farmer->setFarmerId($fields[0]);
-                $farmer->setLoan_payment_id($fields[1]);
-                $farmer->setFarmer_balance_id($fields[2]);
-                $farmer->setLoan_id($fields[3]);
-                $farmer->setLoan_date($fields[4]);
-                $farmer->setLoan_quantity_paid($fields[5]);
+                $farmer->setInventoryUpdateId($fields[1]);
+                $farmer->setInventoryId($fields[2]);
+                $farmer->setQuantityKg($fields[3]);
+                $farmer->setCredit($fields[4]);
+                $farmer->setDate($fields[5]);
                 $documentManager->persist($farmer);
                 $count++;
             }
         }
         $documentManager->flush();
+        
 
         return $this->json($count);
     }

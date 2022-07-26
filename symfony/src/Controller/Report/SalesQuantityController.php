@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Report;
 
 use App\Document\FarmerInformation;
 use App\Document\FarmerProduct;

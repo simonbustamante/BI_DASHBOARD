@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Importer;
 
 use App\Document\FarmerProfile;
 use Doctrine\ODM\MongoDB\DocumentManager;

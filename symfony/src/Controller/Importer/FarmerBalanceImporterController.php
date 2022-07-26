@@ -1,32 +1,32 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Importer;
 
-use App\Document\FarmerGroup;
+use App\Document\FarmerBalance;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class FarmerGroupImporterController extends AbstractController
+class FarmerBalanceImporterController extends AbstractController
 {
-    #[Route('/farmer-group', name: 'farmer-group')]
+    #[Route('/farmer-balance', name: 'farmer-balance')]
     public function index(DocumentManager $documentManager): Response
     {
         $cursor = $documentManager
-            ->getDocumentCollection(FarmerGroup::class)
+            ->getDocumentCollection(FarmerBalance::class)
             ->find()
             ;
 
         return $this->json([
-            'farmer_group' => $cursor->toArray(),
+            'farmer_balance' => $cursor->toArray(),
         ]);
     }
 
 
-    #[Route('/import-farmer-group', name: 'ifg', methods: ['POST'])]
-    public function importFarmerGroup(Request $request, DocumentManager $documentManager): Response
+    #[Route('/import-farmer-balance', name: 'ifb', methods: ['POST'])]
+    public function importFarmerBalance(Request $request, DocumentManager $documentManager): Response
     {
         
         $content = file_get_contents($request->files->get('csv'));
@@ -39,13 +39,14 @@ class FarmerGroupImporterController extends AbstractController
             if($fields[0] != "farmer_id" && $fields[0]!="")
             {
                 //dump($fields);die(); 
-                $farmer = new FarmerGroup();
-                $farmer->setFarmerId($fields[0]);
-                $farmer->setGroups_id($fields[1]);
-                $farmer->setGroups_name($fields[2]);
-                $farmer->setGroups_idnumber($fields[3]);
-                $farmer->setGroups_year($fields[4]);
-                $documentManager->persist($farmer);
+                $farmerBalance = new FarmerBalance();
+                $farmerBalance->setFarmerId($fields[0]);
+                $farmerBalance->setBalanceId($fields[1]);
+                $farmerBalance->setDebt($fields[2]);
+                $farmerBalance->setCredit($fields[3]);
+                $farmerBalance->setMonthlyFee($fields[4]);
+                $farmerBalance->setFarmerDescription($fields[5]);
+                $documentManager->persist($farmerBalance);
                 $count++;
             }
         }

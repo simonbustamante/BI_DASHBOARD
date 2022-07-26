@@ -9,39 +9,59 @@ use Doctrine\ODM\MongoDB\Types\Type;
 class MayaniInventory
 {
     #[MongoDB\Id]
-    private string $id;
+    private $id;
 
     #[MongoDB\Field(type: Type::STRING)]
-    private string $farmerId;
-    #[MongoDB\Field(type: Type::STRING)]
-    private $inventoryUpdateId;
-    #[MongoDB\Field(type: Type::STRING)]
-    private $inventoryId;
-    #[MongoDB\Field(type: Type::STRING)]
-    private $quantityKg;
-    #[MongoDB\Field(type: Type::STRING)]
-    private $credit;
-    #[MongoDB\Field(type: Type::STRING)]
-    private $date;
+    private $mProductInventoryId;
 
-    /**
-     * Get the value of farmerid
-     */ 
-    public function getFarmerId()
-    {
-        return $this->farmerId;
-    }
+    #[MongoDB\Field(type: Type::STRING)]
+    private $mProductInventoryDescription;
 
-    /**
-     * Set the value of farmerid
-     *
-     * @return  self
-     */ 
-    public function setFarmerId($farmerId)
-    {
-        $this->farmerId = $farmerId;
-        return $this;
-    }
+    #[MongoDB\Field(type: Type::FLOAT)]
+    private $mProductInventoryTotalKg;
+
+    #[MongoDB\Field(type: Type::FLOAT)]
+    private $mProductInventoryTotalValue;
+
+    #[MongoDB\Field(type: Type::STRING)]
+    private $mRequestInventoryId;
+
+    #[MongoDB\Field(type: Type::FLOAT)]
+    private $mRequestInventoryKg;
+
+    #[MongoDB\Field(type: Type::FLOAT)]
+    private $mRequestInventoryDebt;
+
+    #[MongoDB\Field(type: Type::DATE)]
+    private $mRequestInventoryDate;
+
+    #[MongoDB\Field(type: Type::STRING)]
+    private $mRequestInventoryDescription;
+
+    #[MongoDB\Field(type: Type::STRING)]
+    private $farmInventoryId;
+
+    #[MongoDB\Field(type: Type::STRING)]
+    private $b2cProductRequestId;
+
+    #[MongoDB\Field(type: Type::STRING)]
+    private $b2cProductRequestDescription;
+
+    #[MongoDB\Field(type: Type::FLOAT)]
+    private $b2cProductRequestKg;
+
+    #[MongoDB\Field(type: Type::FLOAT)]
+    private $b2cProductRequestTotalDebt;
+
+    #[MongoDB\Field(type: Type::DATE)]
+    private $b2cProductRequestDate;
+
+    #[MongoDB\Field(type: Type::STRING)]
+    private $farmerBalanceId;
+    
+    
+
+   
 
     /**
      * Get the value of id
@@ -64,101 +84,321 @@ class MayaniInventory
     }
 
     /**
-     * Get the value of inventoryupdateid
+     * Get the value of mProductInventoryId
      */ 
-    public function getInventoryUpdateId()
+    public function getMProductInventoryId()
     {
-        return $this->inventoryUpdateId;
+        return $this->mProductInventoryId;
     }
 
     /**
-     * Set the value of inventoryupdateid
+     * Set the value of mProductInventoryId
      *
      * @return  self
      */ 
-    public function setInventoryUpdateId($inventoryUpdateId)
+    public function setMProductInventoryId($mProductInventoryId)
     {
-        $this->inventoryUpdateId = $inventoryUpdateId;
+        $this->mProductInventoryId = $mProductInventoryId;
 
         return $this;
     }
 
     /**
-     * Get the value of inventoryid
+     * Get the value of mProductInventoryDescription
      */ 
-    public function getInventoryId()
+    public function getMProductInventoryDescription()
     {
-        return $this->inventoryId;
+        return $this->mProductInventoryDescription;
     }
 
     /**
-     * Set the value of inventoryid
+     * Set the value of mProductInventoryDescription
      *
      * @return  self
      */ 
-    public function setInventoryId($inventoryId)
+    public function setMProductInventoryDescription($mProductInventoryDescription)
     {
-        $this->inventoryId = $inventoryId;
+        $this->mProductInventoryDescription = $mProductInventoryDescription;
 
         return $this;
     }
 
     /**
-     * Get the value of quantitykg
+     * Get the value of mProductInventoryTotalKg
      */ 
-    public function getQuantityKg()
+    public function getMProductInventoryTotalKg()
     {
-        return $this->quantityKg;
+        return $this->mProductInventoryTotalKg;
     }
 
     /**
-     * Set the value of quantitykg
+     * Set the value of mProductInventoryTotalKg
      *
      * @return  self
      */ 
-    public function setQuantityKg($quantityKg)
+    public function setMProductInventoryTotalKg($mProductInventoryTotalKg)
     {
-        $this->quantityKg = $quantityKg;
+        $this->mProductInventoryTotalKg = $mProductInventoryTotalKg;
 
         return $this;
     }
 
     /**
-     * Get the value of credit
+     * Get the value of mProductInventoryTotalValue
      */ 
-    public function getCredit()
+    public function getMProductInventoryTotalValue()
     {
-        return $this->credit;
+        return $this->mProductInventoryTotalValue;
     }
 
     /**
-     * Set the value of credit
+     * Set the value of mProductInventoryTotalValue
      *
      * @return  self
      */ 
-    public function setCredit($credit)
+    public function setMProductInventoryTotalValue($mProductInventoryTotalValue)
     {
-        $this->credit = $credit;
+        $this->mProductInventoryTotalValue = $mProductInventoryTotalValue;
 
         return $this;
     }
 
     /**
-     * Get the value of date
+     * Get the value of mRequestInventoryId
      */ 
-    public function getDate()
+    public function getMRequestInventoryId()
     {
-        return $this->date;
+        return $this->mRequestInventoryId;
     }
 
     /**
-     * Set the value of date
+     * Set the value of mRequestInventoryId
      *
      * @return  self
      */ 
-    public function setDate($date)
+    public function setMRequestInventoryId($mRequestInventoryId)
     {
-        $this->date = $date;
+        $this->mRequestInventoryId = $mRequestInventoryId;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of mRequestInventoryKg
+     */ 
+    public function getMRequestInventoryKg()
+    {
+        return $this->mRequestInventoryKg;
+    }
+
+    /**
+     * Set the value of mRequestInventoryKg
+     *
+     * @return  self
+     */ 
+    public function setMRequestInventoryKg($mRequestInventoryKg)
+    {
+        $this->mRequestInventoryKg = $mRequestInventoryKg;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of mRequestInventoryDebt
+     */ 
+    public function getMRequestInventoryDebt()
+    {
+        return $this->mRequestInventoryDebt;
+    }
+
+    /**
+     * Set the value of mRequestInventoryDebt
+     *
+     * @return  self
+     */ 
+    public function setMRequestInventoryDebt($mRequestInventoryDebt)
+    {
+        $this->mRequestInventoryDebt = $mRequestInventoryDebt;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of mRequestInventoryDate
+     */ 
+    public function getMRequestInventoryDate()
+    {
+        return $this->mRequestInventoryDate;
+    }
+
+    /**
+     * Set the value of mRequestInventoryDate
+     *
+     * @return  self
+     */ 
+    public function setMRequestInventoryDate($mRequestInventoryDate)
+    {
+        $this->mRequestInventoryDate = $mRequestInventoryDate;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of mRequestInventoryDescription
+     */ 
+    public function getMRequestInventoryDescription()
+    {
+        return $this->mRequestInventoryDescription;
+    }
+
+    /**
+     * Set the value of mRequestInventoryDescription
+     *
+     * @return  self
+     */ 
+    public function setMRequestInventoryDescription($mRequestInventoryDescription)
+    {
+        $this->mRequestInventoryDescription = $mRequestInventoryDescription;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of farmInventoryId
+     */ 
+    public function getFarmInventoryId()
+    {
+        return $this->farmInventoryId;
+    }
+
+    /**
+     * Set the value of farmInventoryId
+     *
+     * @return  self
+     */ 
+    public function setFarmInventoryId($farmInventoryId)
+    {
+        $this->farmInventoryId = $farmInventoryId;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of b2cProductRequestId
+     */ 
+    public function getB2cProductRequestId()
+    {
+        return $this->b2cProductRequestId;
+    }
+
+    /**
+     * Set the value of b2cProductRequestId
+     *
+     * @return  self
+     */ 
+    public function setB2cProductRequestId($b2cProductRequestId)
+    {
+        $this->b2cProductRequestId = $b2cProductRequestId;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of b2cProductRequestDescription
+     */ 
+    public function getB2cProductRequestDescription()
+    {
+        return $this->b2cProductRequestDescription;
+    }
+
+    /**
+     * Set the value of b2cProductRequestDescription
+     *
+     * @return  self
+     */ 
+    public function setB2cProductRequestDescription($b2cProductRequestDescription)
+    {
+        $this->b2cProductRequestDescription = $b2cProductRequestDescription;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of b2cProductRequestKg
+     */ 
+    public function getB2cProductRequestKg()
+    {
+        return $this->b2cProductRequestKg;
+    }
+
+    /**
+     * Set the value of b2cProductRequestKg
+     *
+     * @return  self
+     */ 
+    public function setB2cProductRequestKg($b2cProductRequestKg)
+    {
+        $this->b2cProductRequestKg = $b2cProductRequestKg;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of b2cProductRequestTotalDebt
+     */ 
+    public function getB2cProductRequestTotalDebt()
+    {
+        return $this->b2cProductRequestTotalDebt;
+    }
+
+    /**
+     * Set the value of b2cProductRequestTotalDebt
+     *
+     * @return  self
+     */ 
+    public function setB2cProductRequestTotalDebt($b2cProductRequestTotalDebt)
+    {
+        $this->b2cProductRequestTotalDebt = $b2cProductRequestTotalDebt;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of b2cProductRequestDate
+     */ 
+    public function getB2cProductRequestDate()
+    {
+        return $this->b2cProductRequestDate;
+    }
+
+    /**
+     * Set the value of b2cProductRequestDate
+     *
+     * @return  self
+     */ 
+    public function setB2cProductRequestDate($b2cProductRequestDate)
+    {
+        $this->b2cProductRequestDate = $b2cProductRequestDate;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of farmerBalanceId
+     */ 
+    public function getFarmerBalanceId()
+    {
+        return $this->farmerBalanceId;
+    }
+
+    /**
+     * Set the value of farmerBalanceId
+     *
+     * @return  self
+     */ 
+    public function setFarmerBalanceId($farmerBalanceId)
+    {
+        $this->farmerBalanceId = $farmerBalanceId;
 
         return $this;
     }
