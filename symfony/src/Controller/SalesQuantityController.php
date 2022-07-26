@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Document\FarmerInformation;
+use App\Document\FarmerProduct;
 use App\Document\FarmerProfile;
 use App\Document\FarmerSellDetail;
 use App\Form\Model\Search;
@@ -62,7 +63,7 @@ class SalesQuantityController extends AbstractController
                         return $this->redirectToRoute('sales_quantity');
                     }
                     $dataTable = $this->generateDataTable($sellArray,$request);
-                    $productTotal = $this->generateProductData($sellArray);
+                    $productTotal = $this->generateProductData($sellArray,$farmerId,$dm);
                     $this->addFlash('success','The chart has been generated.');
                     $invoiceDates = $this->getFarmerInvoicesDates($sellArray);
                     $axes = $this->getChartSalesQuantity($invoiceDates,$startDate,$endDate); 
@@ -91,6 +92,9 @@ class SalesQuantityController extends AbstractController
             $pieChart = $this->setPieChartData($pieChart,null,'Total product sales over the time');
             $dataTable = $dataTable = $this->generateDataTable([],$request);
             $productTotal = [];
+            $farmerId = "none";
+            $startDate = "";
+            $endDate = "";
             
         }
 
@@ -102,12 +106,42 @@ class SalesQuantityController extends AbstractController
             'product_time_line' => $pieChart,
             'form' => $form->createView(),
             'data_table' => $dataTable,
-            'product_total' => $productTotal
+            'product_total' => $productTotal,
+            'farmerId' => $farmerId,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
         ]);
     }
 
     
 
+    #[Route('/exp-csv/{farmerId}/{startDate}/{endDate}', name: 'exp_csv')]
+    public function exportCsv($farmerId,$startDate,$endDate, DocumentManager $dm)
+    {
+        dump($farmerId);
+        $rows = array();
+        if($farmerId != "none")
+        {
+            $farmer = $this->getFarmerSellDetail($dm,$farmerId,$startDate,$endDate);
+            foreach($farmer as $dat)
+            {
+                $data = array( 
+                    $dat->getFarmerId(),
+                    $dat->getIdOrder(),
+                    $dat->getInvoiceDate()->format('Y-m-d'),
+                    $dat->getProductName(),
+                    $dat->getProductQuantity(),
+                    "$".$dat->getProductPrice(),
+                    "$".($dat->getProductQuantity() * $dat->getProductPrice()),
+                );
+                $rows[] = implode(',', $data);    
+            }
+        }
+        $content = implode("\n", $rows);
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'text/csv');
+        return $response;
+    }
     private function dummyData()
     {   
         $data = [
@@ -126,6 +160,7 @@ class SalesQuantityController extends AbstractController
 
         return $data;
     }
+
 
     private function getFarmerProductSales($sellArray)
     {
@@ -166,7 +201,7 @@ class SalesQuantityController extends AbstractController
         return $this->paginator->paginate($farmerSell,$page,$limit);
     }
 
-    private function generateProductData($sellArray)
+    private function generateProductData($sellArray,$farmerId,$dm)
     {
         $i = 0;
         foreach($sellArray as $sell)
@@ -174,9 +209,10 @@ class SalesQuantityController extends AbstractController
             $all['product_name'][$i] = $sell->getProductName();
             $all['product_id'][$i] = $sell->getProductId();
             $all['product_quantity'][$i] = $sell->getProductQuantity();
-            $all['product_sell_amount'][$i] = $all['product_quantity'][$i] * $sell->getProductPrice();
+            $all['product_sell_amount'][$i] = $sell->getProductQuantity() * $sell->getProductPrice();
             $i++;
         }
+        $farmerProducts = $this->getFarmerProductDescription($dm, $farmerId);
         
         $product = array_unique($all['product_id']);
         $productName = array_unique($all['product_name']);
@@ -201,9 +237,24 @@ class SalesQuantityController extends AbstractController
                     }
                 }
             }
-        }
             
-        return $productList;
+        }
+        foreach($productList as $key => $list)
+        {
+            foreach($farmerProducts as $fp)
+            {
+                if($list['product_id'] == $fp->getProductId())
+                {
+                    $finalList[$key]['product_id'] = $fp->getProductId();
+                    $finalList[$key]['product_name'] = $fp->getProductName();
+                    $finalList[$key]['product_sell_amount'] = $list['product_sell_amount'];
+                    $finalList[$key]['product_activity'] = $fp->getActivityName();
+                }
+            }
+        }
+        
+        
+        return $finalList;
     }
 
     private function getChartSalesQuantity($array,$startDate, $endDate)
@@ -281,6 +332,17 @@ class SalesQuantityController extends AbstractController
         $farmer = $farmerSell->toArray();
         return $farmer;
 
+    }
+
+    private function getFarmerProductDescription(DocumentManager $dm, $farmerId)
+    {
+        $farmerProducts = $dm->createQueryBuilder(FarmerProduct::class)
+            ->field('farmerId')->equals($farmerId)
+            ->sort('productId','ASC')
+            ->getQuery()
+            ->execute();
+        $farmerProducts = $farmerProducts->toArray();
+        return $farmerProducts;
     }
 
     private function setChartData(Chart $chart, $reportName, $labels = [], $data = [], $backC = 'rgb(255, 99, 132)', $borderC = 'rgb(255, 99, 132)')

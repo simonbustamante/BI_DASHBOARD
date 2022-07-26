@@ -12,6 +12,19 @@
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h5">Order amount over time</h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group me-2">
+                
+                        <a href="">
+                            <button onclick="window.print()" type="button" class="btn btn-sm btn-outline-secondary">
+                                Print PDF
+                            </button>
+                        </a>
+                        <a href="{{path('exp_csv',{'farmerId':farmerId, 'startDate':startDate|date('Y-m-d') , 'endDate':endDate|date('Y-m-d') })}}">
+                            <button type="button" class="btn btn-sm btn-outline-secondary">
+                                Export CSV
+                            </button>
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="p-5">
@@ -37,9 +50,15 @@
                     <div class="col-lg-3 col-sm-6 pb-3 pt-3">
                         <div class="align-items-center d-flex text-dark">
                             <img src="{{ asset('images/icon-polling-station.png') }}" class="d-inline-block align-top img-fluid" alt="">
-                            <div class="padding-info">
+                            <div class="padding-info align-items-center">
                                 <h2 class="value-info">${{product.product_sell_amount}}</h2>
-                                <p class="title-info">{{product.product_name}}</p>
+                                <p class="title-info">{{product.product_name}} - {{product.product_activity}}</p>
+                                    {% set datePost = endDate|date('d-m-Y') %}
+                                    {% set datePre =  startDate|date('d-m-Y') %}
+                                    {% set difference = date(datePre).diff(date(datePost))%}
+                                    {% set leftDays = difference.days %}
+                                    {% set avg = product.product_sell_amount / leftDays %}
+                                <p class="title-info">${{ avg|round(2,'floor') }} average per day</p>
                             </div>
                         </div>                         
                     </div>
@@ -50,17 +69,9 @@
 
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h5>Sales Details Table</h5>
-        {# <div class="btn-toolbar mb-2 mb-md-0">
-            <div class="btn-group me-2">
-                
-                <a href="{{path('export-pdf',{'farmerId': farmer_id, 'startDate': start_date|date('Y-m-d'), 'endDate': end_date|date('Y-m-d') })}}">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">
-                        Export PDF
-                    </button>
-                </a>
-                <button type="button" class="btn btn-sm btn-outline-secondary">Export CSV</button>
-            </div>
-        </div> #}
+        <div class="btn-toolbar mb-2 mb-md-0">
+            
+        </div>
     </div>
     <div class="table-responsive">
         {{include('dashboard/_table-farmer-sell.html.twig')}}

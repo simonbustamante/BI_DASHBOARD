@@ -2238,4 +2238,10 @@ class FarmerSellDetail
 
         return $this;
     }
+
+    public function __toString()
+    {
+        return $this->farmerId;
+    }
+
 }
