@@ -39,9 +39,9 @@ class FarmerInventoryUpdateImporterController extends AbstractController
             {
                 $farmer = new FarmerInventoryUpdate();
                 $farmer->setFarmerId($fields[0]);
-                $farmer->setInventoryupdateid($fields[1]);
-                $farmer->setInventoryid($fields[2]);
-                $farmer->setQuantitykg($fields[3]);
+                $farmer->setInventoryUpdateId($fields[1]);
+                $farmer->setInventoryId($fields[2]);
+                $farmer->setQuantityKg($fields[3]);
                 $farmer->setCredit($fields[4]);
                 $farmer->setDate($fields[5]);
                 $documentManager->persist($farmer);

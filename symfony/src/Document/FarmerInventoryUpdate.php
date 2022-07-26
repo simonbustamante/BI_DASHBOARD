@@ -14,11 +14,11 @@ class FarmerInventoryUpdate
     #[MongoDB\Field(type: Type::STRING)]
     private string $farmerId;
     #[MongoDB\Field(type: Type::STRING)]
-    private $inventoryupdateid;
+    private $inventoryUpdateId;
     #[MongoDB\Field(type: Type::STRING)]
-    private $inventoryid;
+    private $inventoryId;
     #[MongoDB\Field(type: Type::STRING)]
-    private $quantitykg;
+    private $quantityKg;
     #[MongoDB\Field(type: Type::STRING)]
     private $credit;
     #[MongoDB\Field(type: Type::STRING)]
@@ -66,9 +66,9 @@ class FarmerInventoryUpdate
     /**
      * Get the value of inventoryupdateid
      */ 
-    public function getInventoryupdateid()
+    public function getInventoryUpdateId()
     {
-        return $this->inventoryupdateid;
+        return $this->inventoryUpdateId;
     }
 
     /**
@@ -76,9 +76,9 @@ class FarmerInventoryUpdate
      *
      * @return  self
      */ 
-    public function setInventoryupdateid($inventoryupdateid)
+    public function setInventoryUpdateId($inventoryUpdateId)
     {
-        $this->inventoryupdateid = $inventoryupdateid;
+        $this->inventoryUpdateId = $inventoryUpdateId;
 
         return $this;
     }
@@ -86,9 +86,9 @@ class FarmerInventoryUpdate
     /**
      * Get the value of inventoryid
      */ 
-    public function getInventoryid()
+    public function getInventoryId()
     {
-        return $this->inventoryid;
+        return $this->inventoryId;
     }
 
     /**
@@ -96,9 +96,9 @@ class FarmerInventoryUpdate
      *
      * @return  self
      */ 
-    public function setInventoryid($inventoryid)
+    public function setInventoryId($inventoryId)
     {
-        $this->inventoryid = $inventoryid;
+        $this->inventoryId = $inventoryId;
 
         return $this;
     }
@@ -106,9 +106,9 @@ class FarmerInventoryUpdate
     /**
      * Get the value of quantitykg
      */ 
-    public function getQuantitykg()
+    public function getQuantityKg()
     {
-        return $this->quantitykg;
+        return $this->quantityKg;
     }
 
     /**
@@ -116,9 +116,9 @@ class FarmerInventoryUpdate
      *
      * @return  self
      */ 
-    public function setQuantitykg($quantitykg)
+    public function setQuantityKg($quantityKg)
     {
-        $this->quantitykg = $quantitykg;
+        $this->quantityKg = $quantityKg;
 
         return $this;
     }
