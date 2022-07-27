@@ -12,7 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class FarmerSellDetailType extends AbstractType
+class FarmerType extends AbstractType
 {
     private $farmerInformation;
     private $farmer = ['Please select a farmer' => 'all'];
@@ -36,7 +36,7 @@ class FarmerSellDetailType extends AbstractType
                 'class' => 'btn btn-sm btn-outline-secondary',
             ],
         ]);
-        $builder->add('start_invoice_date',DateType::class,[
+        $builder->add('start_date',DateType::class,[
             'widget' => 'single_text', 
             'mapped' => false,
             'label' => false,
@@ -44,7 +44,7 @@ class FarmerSellDetailType extends AbstractType
                 'class' => 'btn btn-sm btn-outline-secondary',
             ],
         ]);
-        $builder->add('end_invoice_date',DateType::class,[
+        $builder->add('end_date',DateType::class,[
             'widget' => 'single_text', 
             'mapped' => false,
             'label' => false,

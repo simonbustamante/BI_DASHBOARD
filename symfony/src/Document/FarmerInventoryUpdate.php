@@ -17,11 +17,11 @@ class FarmerInventoryUpdate
     private $inventoryUpdateId;
     #[MongoDB\Field(type: Type::STRING)]
     private $inventoryId;
-    #[MongoDB\Field(type: Type::STRING)]
+    #[MongoDB\Field(type: Type::FLOAT)]
     private $quantityKg;
-    #[MongoDB\Field(type: Type::STRING)]
+    #[MongoDB\Field(type: Type::FLOAT)]
     private $credit;
-    #[MongoDB\Field(type: Type::STRING)]
+    #[MongoDB\Field(type: Type::DATE)]
     private $date;
 
     /**

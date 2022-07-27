@@ -7,7 +7,7 @@ use App\Document\FarmerProduct;
 use App\Document\FarmerProfile;
 use App\Document\FarmerSellDetail;
 use App\Form\Model\Search;
-use App\Form\Type\FarmerSellDetailType;
+use App\Form\Type\FarmerType;
 use App\Form\Type\SearchType;
 use App\Repository\GeneralRepository;
 use DateInterval;
@@ -40,7 +40,7 @@ class SalesQuantityController extends AbstractController
     public function index(DocumentManager $dm, Request $request, ChartBuilderInterface $chartBuilder): Response
     {
            
-        $form = $this->createForm(FarmerSellDetailType::class, null,[
+        $form = $this->createForm(FarmerType::class, null,[
             'action' => $this->generateUrl('sales_quantity'),
             'method' => 'GET'
         ]);
@@ -48,8 +48,8 @@ class SalesQuantityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid())
         {
             $farmerId = $form['farmer_id']->getData();
-            $startDate = $form['start_invoice_date']->getData();
-            $endDate = $form['end_invoice_date']->getData();
+            $startDate = $form['start_date']->getData();
+            $endDate = $form['end_date']->getData();
             if($startDate <= $endDate)
             {
                 if($farmerId != "all")
