@@ -24,8 +24,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 use Knp\Component\Pager\PaginatorInterface;
-use Dompdf\Dompdf;
-use Dompdf\Options;
+
 
 class SalesQuantityController extends AbstractController
 {
@@ -90,7 +89,7 @@ class SalesQuantityController extends AbstractController
             $pieChart = $chartBuilder->createChart(Chart::TYPE_PIE);
             $chart = $this->setChartData($chart,'Order amount over time');
             $pieChart = $this->setPieChartData($pieChart,null,'Total product sales over the time');
-            $dataTable = $dataTable = $this->generateDataTable([],$request);
+            $dataTable = $this->generateDataTable([],$request);
             $productTotal = [];
             $farmerId = "none";
             $startDate = "";

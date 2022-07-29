@@ -1,0 +1,46 @@
+
+<table class="table table-striped table-sm">
+<thead>
+        <tr>
+            <th>
+                {{ knp_pagination_sortable(data_table, 'Farmer Id', 'farmerId') }}
+            </th>
+            <th {% if data_table.isSorted('inventoryUpdateId') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(data_table, 'Inventory Update Id', 'inventoryUpdateId') }}
+            </th>
+            <th {% if data_table.isSorted('inventoryId') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(data_table, 'inventory Id', 'inventoryId') }}
+            </th>
+            <th {% if data_table.isSorted('quantityKg') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(data_table, 'Quantity Kg', 'quantityKg') }}
+            </th>
+            <th {% if data_table.isSorted('credit') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(data_table, 'Credit', 'credit') }}
+            </th>
+            <th {% if data_table.isSorted('date') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(data_table, 'Date', 'date') }}
+            </th>
+        
+        </tr>
+    </thead>
+    <tbody>
+        {% for data in data_table %}
+        <tr>
+            <td>{{data.farmerId}}</td>
+            <td>{{data.inventoryUpdateId}}</td>
+            <td>{{data.inventoryId}}</td>
+            <td>{{data.quantityKg}}</td>
+            <td>{{data.credit}}</td>
+            <td>{{data.date|date('Y-m-d')}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="container">
+    <div class="row">
+        <div class="d-flex align-items-center justify-content-center">
+            {{ knp_pagination_render(data_table) }}
+        </div>
+    </div>
+</div>

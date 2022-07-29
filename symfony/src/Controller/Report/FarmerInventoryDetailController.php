@@ -4,6 +4,7 @@ namespace App\Controller\Report;
 
 use App\Document\FarmerInventoryUpdate;
 use App\Document\FarmerProduct;
+use App\Document\MayaniInventory;
 use App\Form\Type\FarmerType;
 use DateInterval;
 use DatePeriod;
@@ -14,9 +15,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
+use Knp\Component\Pager\PaginatorInterface;
 
 class FarmerInventoryDetailController extends AbstractController
 {
+    private $paginator;
+
+    public function __construct(PaginatorInterface $paginator)
+    {
+        $this->paginator = $paginator;
+    }
+
     #[Route('/inventory', name: 'farmer_inventory')]
     public function index(DocumentManager $dm, Request $request, ChartBuilderInterface $chartBuilder): Response
     {
@@ -34,21 +43,33 @@ class FarmerInventoryDetailController extends AbstractController
             {
                 if($farmerId != "all")
                 {
-                    $chart = $this->setChartType($chartBuilder,"TYPE_LINE");
-                    $pieChart = $this->setChartType($chartBuilder,"TYPE_PIE");
                     $inventoryArray = $this->getFarmerInventoryUpdate($dm,$farmerId,$startDate,$endDate);
-                    //dump($inventoryArray);die();
                     if(empty($inventoryArray))
                     {
                         $this->addFlash('warning','Please select other dates since there is no data related to these dates');
                         return $this->redirectToRoute('farmer_inventory');
                     }
+                    $mayaniArray = $this->getMayaniRequestData($dm,$farmerId,$startDate,$endDate);
+                        dump($mayaniArray);die();
                     $farmerProducts = $this->getFarmerProduct($dm, $farmerId);
-                    $inventoryDate = $this->getFarmerInventoryDatesPerProduct($inventoryArray, $farmerProducts);
-                    $data = $this->getChartInventoryUpdateData($inventoryDate,$farmerProducts,$startDate,$endDate);
-                    
-                    $farmerInventoryUpdateQuantity = $this->getFarmerProductInventoryUpdate($inventoryArray,$farmerProducts);
 
+                    //first chart and piechart
+                    $chart = $this->setChartType($chartBuilder,"TYPE_LINE");
+                    $pieChart = $this->setChartType($chartBuilder,"TYPE_PIE");
+                    $inventoryDate = $this->getFarmerInventoryDatesPerProduct($inventoryArray, $farmerProducts);
+                        //dump($inventoryDate);die();
+                    $data = $this->getChartInventoryUpdateData($inventoryDate,$farmerProducts,$startDate,$endDate);
+                    $farmerInventoryUpdateQuantity = $this->getFarmerProductInventoryUpdate($inventoryArray,$farmerProducts);
+                    $dataTable = $this->generateDataTable($inventoryArray,$request);
+
+                    //second chart and pie chart
+                    $chart2 = $this->setChartType($chartBuilder,"TYPE_LINE");
+                    $pieChart2 = $this->setChartType($chartBuilder,"TYPE_PIE");
+                    $b2cRequests = $this->getMayaniB2cRequestsPerProduct($mayaniArray, $farmerProducts);
+                        //dump($b2cRequests);die();
+                    $data2 = $this->getChartMayaniB2cRequestData($b2cRequests,$farmerProducts,$startDate,$endDate);
+
+                    $this->addFlash('success','The report has been generated.');
                 }
                 else{
                     $this->addFlash('warning','Please select a farmer');
@@ -62,25 +83,32 @@ class FarmerInventoryDetailController extends AbstractController
             }
             $chart = $this->setChartData($chart, $data);
             $pieChart = $this->setPieChartData($pieChart,$farmerInventoryUpdateQuantity,'Quantity of inventory updated over time');
+            $chart2 = $this->setChartData($chart2, $data2);
         }
         else{
             $chart = $chartBuilder->createChart(Chart::TYPE_BAR);
+            $chart2 = $chartBuilder->createChart(Chart::TYPE_BAR);
             $pieChart = $chartBuilder->createChart(Chart::TYPE_PIE);
             //$chart = $chart->setData($this->dummyData());
             $chart = $this->setChartData($chart,[]);
+            $chart2 = $this->setChartData($chart2,[]);
             $pieChart = $this->setPieChartData($pieChart,null,'Quantity of inventory updated over time');
+            $dataTable = $this->generateDataTable([],$request);
             $startDate = "";
             $endDate = "";
             
         }
         $chart = $this->setChartOptions($chart);
+        $chart2 = $this->setChartOptions($chart2);
         $pieChart = $this->setChartOptions($pieChart);
         return $this->render('inventory/farmer-inventory.html.twig', [
             'form' => $form->createView(),
             'startDate' => $startDate,
             'endDate' => $endDate,
             'inventory_time_line' => $chart,
+            'b2c_time_line' => $chart2,
             'inventory_quantity' => $pieChart,
+            'data_table' => $dataTable,
         ]);
     }
 
@@ -117,7 +145,12 @@ class FarmerInventoryDetailController extends AbstractController
         ];
         return $data;
     }
-
+    private function generateDataTable($inventoryArray,$request)
+    {
+        $limit = "5";
+        $page = $request->query->getInt('page',1);
+        return $this->paginator->paginate($inventoryArray,$page,$limit);
+    }
     private function getFarmerProductInventoryUpdate($inventoryArray,$farmerProducts)
     {
         $i = 0;
@@ -148,7 +181,6 @@ class FarmerInventoryDetailController extends AbstractController
         return $productList;
     }
 
-
     private function getFarmerProduct(DocumentManager $dm, $farmerId)
     {
         $farmerProducts = $dm->createQueryBuilder(FarmerProduct::class)
@@ -160,6 +192,67 @@ class FarmerInventoryDetailController extends AbstractController
 
         //dump($farmerProducts);die();
         return $farmerProducts;
+    }
+
+    private function getChartMayaniB2cRequestData($b2cRequests,$farmerProducts,$startDate,$endDate)
+    {
+        $period = new DatePeriod($startDate,new DateInterval('P1D'),$endDate);
+        foreach ($period as $key => $value) 
+        {
+            $days[$key] = $value->format('Y-m-d');
+        }
+        foreach ($days as $kday => $day)
+        {
+            foreach($b2cRequests as $ikey => $b2cR)
+            {
+                $i = 0;
+                foreach($b2cR['b2c_product_request_date'] as $dates)
+                {
+                    if($dates == $day)
+                    {
+                        $i++;
+                    }
+                }
+                $count[$kday][$ikey]['count'] = $i;
+                $count[$kday][$ikey]['product_id'] = $b2cRequests[$ikey]['product_id'][0];
+                $count[$kday][$ikey]['product_name'] = $b2cRequests[$ikey]['product_name'][0];
+                $count[$kday][$ikey]['inventory_id'] = $b2cRequests[$ikey]['inventory_id'][0];
+                $count[$kday][$ikey]['b2c_product_request_date'] = $b2cRequests[$ikey]['b2c_product_request_date'][0];
+            }
+        }
+        foreach($farmerProducts as $pkey => $product)
+        {
+            foreach($count as $kday => $countDay)
+            {
+                foreach($countDay as $kcd => $cd)
+                {
+                    if($product->getProductId() == $cd['product_id'])
+                    {
+                        $productName[$pkey] = $cd['product_name'];
+                        $farmerProductPerDay[$pkey][$kday][$kcd] =  $cd['count'];
+                    }
+                }
+            }
+        }
+        foreach($farmerProductPerDay as $key => $farmer)
+        {
+            $simplify[$key] = array_reduce($farmer, 'array_merge', array());
+        }
+        foreach($simplify as $key => $single)
+        {
+            $datasets[$key] = [
+                'label' => $productName[$key],
+                'backgroundColor' => $this->getColor()[$key],
+                'borderColor' => $this->getColor()[$key],
+                'data' => $single,
+            ];
+        }
+        $data = [
+            'labels' => $days,
+            'datasets' => $datasets,
+        ];
+        return $data;
+
     }
     private function getChartInventoryUpdateData($inventoryDate,$farmerProducts,$startDate,$endDate)
     {
@@ -225,7 +318,6 @@ class FarmerInventoryDetailController extends AbstractController
         ];
         return $data;
     }
-
     private function getColor()
     {
         $color = [
@@ -262,7 +354,26 @@ class FarmerInventoryDetailController extends AbstractController
         ];
         return $color;
     }
-
+    private function getMayaniB2cRequestsPerProduct($mayaniArray, $farmerProducts)
+    {
+       foreach($farmerProducts as $key => $product)
+       {
+            $i = 0;
+            foreach($mayaniArray as $mayani)
+            {
+                if($product->getInventoryId() == $mayani->getMProductInventoryId())
+                {
+                    $mayaniRequestDate = $mayani->getB2cProductRequestDate();
+                    $mayaniRequestDateArray[$key]['b2c_product_request_date'][$i] = $mayaniRequestDate->format('Y-m-d');
+                    $mayaniRequestDateArray[$key]['product_name'][$i] = $product->getProductName();
+                    $mayaniRequestDateArray[$key]['product_id'][$i] = $product->getProductId();
+                    $mayaniRequestDateArray[$key]['inventory_id'][$i++] = $mayani->getMProductInventoryId();
+                }
+            }
+       }
+       //die();
+       return $mayaniRequestDateArray; 
+    }
     private function getFarmerInventoryDatesPerProduct($inventoryArray, $farmerProducts)
     {
         
@@ -285,6 +396,7 @@ class FarmerInventoryDetailController extends AbstractController
 
         return $inventoryDateArray; 
     }
+    
     private function getFarmerInventoryUpdate(DocumentManager $dm,$farmerId, $startTime, $endTime)
     {
         $farmerInventory = $dm->createQueryBuilder(FarmerInventoryUpdate::class)
@@ -295,6 +407,17 @@ class FarmerInventoryDetailController extends AbstractController
             ->execute();
         $farmer = $farmerInventory->toArray();
         return $farmer;
+    }
+    private function getMayaniRequestData(DocumentManager $dm,$farmerId,$startTime,$endTime)
+    {
+        $mayaniData = $dm->createQueryBuilder(MayaniInventory::class)
+            ->field('farmerBalanceId')->equals($farmerId)
+            ->field('b2cProductRequestDate')->range($startTime,$endTime)
+            ->sort('mProductInventoryId','ASC')    
+            ->getQuery()
+            ->execute();
+        $mayani = $mayaniData->toArray();
+        return $mayani;
     }
     private function setChartOptions($chart, $min = 0, $max = 2)
     {
@@ -315,7 +438,7 @@ class FarmerInventoryDetailController extends AbstractController
 
         return $chart;
     }
-    private function setPieChartData(Chart $chart,$data = null, $reportName, $backC = 'rgb(255, 99, 132)', $borderC = 'rgb(255, 99, 132)')
+    private function setPieChartData(Chart $chart,$data = null, $reportName)
     {
         $backC = ['rgb(255, 0, 0)','rgb(255, 255, 0)','rgb(0, 255, 255)','rgb(0, 0, 255)'];
         $borderC = ['rgb(255, 0, 0)','rgb(255, 255, 0)','rgb(0, 255, 255)','rgb(0, 0, 255)'];
