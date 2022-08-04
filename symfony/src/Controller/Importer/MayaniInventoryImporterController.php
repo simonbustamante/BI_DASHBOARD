@@ -37,29 +37,21 @@ class MayaniInventoryImporterController extends AbstractController
         {
             $fields = explode(",", $singleField);
             //dump($fields);die();
-            if($fields[0] != "mProductInventoryId" && $fields[0]!="")
+            if($fields[0] != "farmerId" && $fields[0]!="")
             {
                 //dump($fields);die(); 
                 $mayani = new MayaniInventory();
-                $mayani->setMProductInventoryId($fields[0]);
-                $mayani->setMProductInventoryDescription($fields[1]);
-                $mayani->setMProductInventoryTotalKg($fields[2]);
-                $mayani->setMProductInventoryTotalValue($fields[3]);
-                $mayani->setMRequestInventoryId($fields[4]);
-                $mayani->setMRequestInventoryKg($fields[5]);
-                $mayani->setMRequestInventoryDebt($fields[6]);
-                $mayani->setMRequestInventoryDate($fields[7]);
-                $mayani->setMRequestInventoryDescription($fields[8]);
-                $mayani->setFarmInventoryId($fields[9]);
-                $mayani->setB2cProductRequestId($fields[10]);
-                $mayani->setB2cProductRequestDescription($fields[11]);
-                $mayani->setB2cProductRequestKg($fields[12]);
-                $mayani->setB2cProductRequestTotalDebt($fields[13]);
-                $mayani->setB2cProductRequestDate($fields[14]);
-                $mayani->setFarmerBalanceId($fields[15]);
+                $mayani->setFarmerId($fields[0]);
+                $mayani->setFarmerBalanceId($fields[1]);
+                $mayani->setB2cProductRequestId($fields[2]);
+                $mayani->setB2cProductRequestDescription($fields[3]);
+                $mayani->setB2cProductRequestKg($fields[4]);
+                $mayani->setB2cProductRequestTotalDebt($fields[5]);
+                $mayani->setB2cProductRequestDate($fields[6]);
+                $mayani->setFarmInventoryId($fields[7]);
                 $documentManager->persist($mayani);
                 $count++;
-                if($count == '100000'){
+                if($count == '50000'){
                     $documentManager->flush();
                     $total = $total + $count;
                     $count = 0;

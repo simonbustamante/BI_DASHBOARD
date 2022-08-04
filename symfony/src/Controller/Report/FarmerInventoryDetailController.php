@@ -44,14 +44,19 @@ class FarmerInventoryDetailController extends AbstractController
                 if($farmerId != "all")
                 {
                     $inventoryArray = $this->getFarmerInventoryUpdate($dm,$farmerId,$startDate,$endDate);
+                        //dump($inventoryArray);die();
                     if(empty($inventoryArray))
                     {
                         $this->addFlash('warning','Please select other dates since there is no data related to these dates');
                         return $this->redirectToRoute('farmer_inventory');
                     }
                     $mayaniArray = $this->getMayaniRequestData($dm,$farmerId,$startDate,$endDate);
-                        dump($mayaniArray);die();
+                        //dump($mayaniArray);die();
                     $farmerProducts = $this->getFarmerProduct($dm, $farmerId);
+                    
+                    //the current inventory
+                    $realInventory = $this->getFarmerinventory($dm, $farmerId);
+                        //dump($realInventory);//die();
 
                     //first chart and piechart
                     $chart = $this->setChartType($chartBuilder,"TYPE_LINE");
@@ -68,6 +73,15 @@ class FarmerInventoryDetailController extends AbstractController
                     $b2cRequests = $this->getMayaniB2cRequestsPerProduct($mayaniArray, $farmerProducts);
                         //dump($b2cRequests);die();
                     $data2 = $this->getChartMayaniB2cRequestData($b2cRequests,$farmerProducts,$startDate,$endDate);
+                    $b2cInventoryRequestQuantity = $this->getB2cInventoryRequest($mayaniArray, $farmerProducts);
+
+                    //third chart
+                    $chart3 = $this->setChartType($chartBuilder,"TYPE_LINE");
+                    $totalInventoryOverTime = $this->getInventoryAndB2cPerProduct($inventoryDate,$b2cRequests,$farmerProducts);
+                    $data3 = $this->getChartInventoryLessB2cData($totalInventoryOverTime,$realInventory,$farmerProducts,$startDate,$endDate);
+
+                    
+
 
                     $this->addFlash('success','The report has been generated.');
                 }
@@ -84,15 +98,24 @@ class FarmerInventoryDetailController extends AbstractController
             $chart = $this->setChartData($chart, $data);
             $pieChart = $this->setPieChartData($pieChart,$farmerInventoryUpdateQuantity,'Quantity of inventory updated over time');
             $chart2 = $this->setChartData($chart2, $data2);
+            $pieChart2 = $this->setPieChartData($pieChart2,$b2cInventoryRequestQuantity,'Quantity of inventory requested by Mayani');
+            $chart3 = $this->setChartData($chart3, $data3);
         }
         else{
             $chart = $chartBuilder->createChart(Chart::TYPE_BAR);
             $chart2 = $chartBuilder->createChart(Chart::TYPE_BAR);
+            $chart3 = $chartBuilder->createChart(Chart::TYPE_BAR);
             $pieChart = $chartBuilder->createChart(Chart::TYPE_PIE);
+            $pieChart2 = $chartBuilder->createChart(Chart::TYPE_PIE);
             //$chart = $chart->setData($this->dummyData());
             $chart = $this->setChartData($chart,[]);
             $chart2 = $this->setChartData($chart2,[]);
+            $chart3 = $this->setChartData($chart3,[]);
             $pieChart = $this->setPieChartData($pieChart,null,'Quantity of inventory updated over time');
+            $pieChart2 = $this->setPieChartData($pieChart2,null,'Quantity of inventory requested by Mayani');
+
+            $realInventory = [];
+
             $dataTable = $this->generateDataTable([],$request);
             $startDate = "";
             $endDate = "";
@@ -100,18 +123,22 @@ class FarmerInventoryDetailController extends AbstractController
         }
         $chart = $this->setChartOptions($chart);
         $chart2 = $this->setChartOptions($chart2);
+        $chart3 = $this->setChartOptions($chart3);
         $pieChart = $this->setChartOptions($pieChart);
+        $pieChart2 = $this->setChartOptions($pieChart2);
         return $this->render('inventory/farmer-inventory.html.twig', [
             'form' => $form->createView(),
             'startDate' => $startDate,
             'endDate' => $endDate,
             'inventory_time_line' => $chart,
             'b2c_time_line' => $chart2,
+            'real_inventory_time_line' => $chart3,
             'inventory_quantity' => $pieChart,
+            'quantity_on_mayani' => $pieChart2,
+            'real_inventory' => $realInventory,
             'data_table' => $dataTable,
         ]);
     }
-
     private function dummyData()
     {   
         // $data = [
@@ -150,6 +177,34 @@ class FarmerInventoryDetailController extends AbstractController
         $limit = "5";
         $page = $request->query->getInt('page',1);
         return $this->paginator->paginate($inventoryArray,$page,$limit);
+    }
+    private function getB2cInventoryRequest($mayaniArray, $farmerProducts)
+    {
+        //$i = 0;
+        foreach($farmerProducts as $pkey => $product)
+        {
+            $i = 0;
+            foreach($mayaniArray as $inventory)
+            {   
+                if($product->getInventoryId() == $inventory->getFarmInventoryId())
+                {
+                    $all[$pkey]['product_name'][$i] = $product->getProductName();
+                    $all[$pkey]['product_id'][$i] = $product->getProductId(); 
+                    $all[$pkey]['quantity_kg'][$i++] = $inventory->getB2cProductRequestKg(); 
+                }
+            }
+        }
+        foreach($farmerProducts as $key => $prod)
+        {
+            $productList[$key]['product_id'] = $prod->getProductId();
+            $productList[$key]['product_name'] = $prod->getProductName();   
+            foreach($all as $akey => $pid)
+            {
+                $productList[$key]['quantity_kg'] = array_sum($pid['quantity_kg']);
+            }
+            
+        }
+        return $productList; 
     }
     private function getFarmerProductInventoryUpdate($inventoryArray,$farmerProducts)
     {
@@ -193,7 +248,119 @@ class FarmerInventoryDetailController extends AbstractController
         //dump($farmerProducts);die();
         return $farmerProducts;
     }
+    private function getChartInventoryLessB2cData($totalInventoryOverTime,$realInventory,$farmerProducts,$startDate,$endDate)
+    {
+        $period = new DatePeriod($startDate,new DateInterval('P1D'),$endDate);
+        foreach ($period as $key => $value) 
+        {
+            $days[$key] = $value->format('Y-m-d');
+        }
+        //dump($totalInventoryOverTime);die();
+        $count = [];
+        $j = [];
+        foreach ($days as $kday => $day)
+        {
+            foreach($totalInventoryOverTime as $tiotKey => $tiot)
+            {   
+                //dump($totalInventoryOverTime);die();
+                $i = 0;
+                $x = 0;
+                foreach($tiot['b2c_and_iupdate'] as $dkey => $dates)
+                {   
+                    if($dates == $day)
+                    {
+                        //dump($dates);
+                        //dump($x);
+                        //dump($tiot['quantity_kg'][$dkey]);
+                        // if($tiot['quantity_kg'][$dkey] > 0 || $tiot['quantity_kg'][$dkey] < 0)
+                        $i = $i + $tiot['quantity_kg'][$dkey];
+                        // {
+                        if(isset($j[$tiotKey]))
+                        {
+                            $j[$tiotKey] = $j[$tiotKey] + $tiot['quantity_kg'][$dkey];
+                        }
+                        else
+                        {
+                            $j[$tiotKey] = $i;
+                        }
+                        //}
+                        //$i = $i + $j[$tiotKey];
+                        //dump($i);
+                        //dump($j[$tiotKey]);
+                        //dump("-------------YYY--------------");
+                        // if($tiot['quantity_kg'][$dkey]=="-15")
+                        // {
+                        //     die();
+                        // }
+                        
+                    }
+                    else
+                    {
+                        //dump($dates);
+                        if(!isset($j[$tiotKey]))
+                        {
+                            $j[$tiotKey] = $i;
+                        }
+                        // else
+                        // {
+                        //     $j[$tiotKey] = $j[$tiotKey] + $i;
+                        // }
+                        $x++;
+                        //dump($i);
+                        //dump($j[$tiotKey]);
+                        //dump("-------------zzz--------------");    
+                    }
+                }
+                $count[$kday][$tiotKey]['count'] = $j[$tiotKey];
+                
+                
+                
+                $count[$kday][$tiotKey]['product_id'] = $totalInventoryOverTime[$tiotKey]['product_id'][$dkey];
+                $count[$kday][$tiotKey]['product_name'] = $totalInventoryOverTime[$tiotKey]['product_name'][$dkey];
+                $count[$kday][$tiotKey]['inventory_id'] = $totalInventoryOverTime[$tiotKey]['inventory_id'][$dkey];
+                $count[$kday][$tiotKey]['b2c_and_iupdate'] = $totalInventoryOverTime[$tiotKey]['b2c_and_iupdate'][$dkey];
+            }
+        }
+        //dump($count);die();
+        foreach($farmerProducts as $pkey => $product)
+        {
+            foreach($count as $kday => $countDay)
+            {   
+                //dump($count[$kday]['b2c_and_iupdate']);die();
+                foreach($countDay as $kcd => $cd)
+                {
+                    
+                    if($product->getProductId() == $cd['product_id'])
+                    {
+                        $productName[$pkey] = $cd['product_name'];
+                        //dump($cd);
+                        $farmerProductPerDay[$pkey][$kday][$kcd] =  $cd['count'];
+                    }
+                }
+            }
+        }
+        //dump($farmerProductPerDay);die();
+        foreach($farmerProductPerDay as $key => $farmer)
+        {
 
+            $simplify[$key] = array_reduce($farmer, 'array_merge', array());
+        }
+        //dump($simplify);die();
+        foreach($simplify as $key => $single)
+        {
+            $datasets[$key] = [
+                'label' => $productName[$key],
+                'backgroundColor' => $this->getColor()[$key],
+                'borderColor' => $this->getColor()[$key],
+                'data' => $single,
+            ];
+        }
+        $data = [
+            'labels' => $days,
+            'datasets' => $datasets,
+        ];
+        return $data;
+    }
     private function getChartMayaniB2cRequestData($b2cRequests,$farmerProducts,$startDate,$endDate)
     {
         $period = new DatePeriod($startDate,new DateInterval('P1D'),$endDate);
@@ -201,12 +368,13 @@ class FarmerInventoryDetailController extends AbstractController
         {
             $days[$key] = $value->format('Y-m-d');
         }
+        //dump($b2cRequests);die();
         foreach ($days as $kday => $day)
         {
             foreach($b2cRequests as $ikey => $b2cR)
             {
                 $i = 0;
-                foreach($b2cR['b2c_product_request_date'] as $dates)
+                foreach($b2cR['b2c_product_request_date'] as $kd => $dates)
                 {
                     if($dates == $day)
                     {
@@ -214,12 +382,13 @@ class FarmerInventoryDetailController extends AbstractController
                     }
                 }
                 $count[$kday][$ikey]['count'] = $i;
-                $count[$kday][$ikey]['product_id'] = $b2cRequests[$ikey]['product_id'][0];
-                $count[$kday][$ikey]['product_name'] = $b2cRequests[$ikey]['product_name'][0];
-                $count[$kday][$ikey]['inventory_id'] = $b2cRequests[$ikey]['inventory_id'][0];
-                $count[$kday][$ikey]['b2c_product_request_date'] = $b2cRequests[$ikey]['b2c_product_request_date'][0];
+                $count[$kday][$ikey]['product_id'] = $b2cRequests[$ikey]['product_id'][$kd];
+                $count[$kday][$ikey]['product_name'] = $b2cRequests[$ikey]['product_name'][$kd];
+                $count[$kday][$ikey]['inventory_id'] = $b2cRequests[$ikey]['inventory_id'][$kd];
+                $count[$kday][$ikey]['b2c_product_request_date'] = $b2cRequests[$ikey]['b2c_product_request_date'][$kd];
             }
         }
+        //dump($count);die(); 
         foreach($farmerProducts as $pkey => $product)
         {
             foreach($count as $kday => $countDay)
@@ -353,6 +522,67 @@ class FarmerInventoryDetailController extends AbstractController
             'rgb(255, 99, 132)',
         ];
         return $color;
+    }  
+    private function getInventoryAndB2cPerProduct($inventoryDate,$b2cRequests,$farmerProducts)
+    {
+        
+        foreach($farmerProducts as $key => $product)
+        {
+            $totalKg = 0;
+            foreach($inventoryDate as $ikey => $inventory)
+            {
+                foreach($inventory['inventory_id'] as $iidkey => $iid)
+                {
+                    if($product->getInventoryId() == $iid)
+                    {
+    
+                        $b2cAndIupdateArray[$key]['b2c_and_iupdate'][$iidkey] = $inventoryDate[$key]['inventory_date'][$iidkey];
+                        $b2cAndIupdateArray[$key]['product_name'][$iidkey] = $product->getProductName();
+                        $b2cAndIupdateArray[$key]['product_id'][$iidkey] = $product->getProductId();
+                        $b2cAndIupdateArray[$key]['inventory_id'][$iidkey] = $inventoryDate[$key]['inventory_id'][$iidkey];
+                        $b2cAndIupdateArray[$key]['quantity_kg'][$iidkey] = $inventoryDate[$key]['quantity_kg'][$iidkey];
+                        // if(isset($totalKg))
+                        // {
+                        //     $totalKg = $totalKg + $inventoryDate[$key]['quantity_kg'][$iidkey];
+                        // }
+                        // else
+                        // {
+                        //     $totalKg = $inventoryDate[$key]['quantity_kg'][$iidkey];
+                        // }
+                        // $b2cAndIupdateArray[$key]['total_kg'][$iidkey] = $totalKg;        
+                    }
+                    $i = $iidkey + 1;
+                }
+            }
+                //dump($b2cAndIupdateArray);die();
+            foreach($b2cRequests as $rkey =>$request)
+            {
+                //dump($b2cRequests);die();
+                foreach($request['inventory_id'] as $ridkey => $rid)
+                {
+                    if($product->getInventoryId() == $rid)
+                    {
+                        $b2cAndIupdateArray[$key]['b2c_and_iupdate'][$i] = $b2cRequests[$key]['b2c_product_request_date'][$ridkey];
+                        $b2cAndIupdateArray[$key]['product_name'][$i] = $product->getProductName();
+                        $b2cAndIupdateArray[$key]['product_id'][$i] = $product->getProductId();
+                        $b2cAndIupdateArray[$key]['inventory_id'][$i] = $b2cRequests[$key]['inventory_id'][$ridkey];
+                        $b2cAndIupdateArray[$key]['quantity_kg'][$i] = ($b2cRequests[$key]['quantity_kg'][$ridkey] * -1);
+                        // if(isset($totalKg))
+                        // {
+                        //     $totalKg = $totalKg - $b2cRequests[$key]['quantity_kg'][$ridkey];
+                        // }
+                        // else
+                        // {
+                        //     $totalKg = $b2cRequests[$key]['quantity_kg'][$ridkey];
+                        // }
+                        // $b2cAndIupdateArray[$key]['total_kg'][$i] = $totalKg; 
+                        $i++;
+                    }
+                }
+            }
+        }
+        
+        return $b2cAndIupdateArray;
     }
     private function getMayaniB2cRequestsPerProduct($mayaniArray, $farmerProducts)
     {
@@ -361,13 +591,14 @@ class FarmerInventoryDetailController extends AbstractController
             $i = 0;
             foreach($mayaniArray as $mayani)
             {
-                if($product->getInventoryId() == $mayani->getMProductInventoryId())
+                if($product->getInventoryId() == $mayani->getFarmInventoryId())
                 {
                     $mayaniRequestDate = $mayani->getB2cProductRequestDate();
                     $mayaniRequestDateArray[$key]['b2c_product_request_date'][$i] = $mayaniRequestDate->format('Y-m-d');
                     $mayaniRequestDateArray[$key]['product_name'][$i] = $product->getProductName();
                     $mayaniRequestDateArray[$key]['product_id'][$i] = $product->getProductId();
-                    $mayaniRequestDateArray[$key]['inventory_id'][$i++] = $mayani->getMProductInventoryId();
+                    $mayaniRequestDateArray[$key]['inventory_id'][$i] = $mayani->getFarmInventoryId();
+                    $mayaniRequestDateArray[$key]['quantity_kg'][$i++] = $mayani->getB2cProductRequestKg();
                 }
             }
        }
@@ -376,7 +607,6 @@ class FarmerInventoryDetailController extends AbstractController
     }
     private function getFarmerInventoryDatesPerProduct($inventoryArray, $farmerProducts)
     {
-        
         foreach($farmerProducts as $key => $product)
         {
             $i = 0;
@@ -388,7 +618,8 @@ class FarmerInventoryDetailController extends AbstractController
                     $inventoryDateArray[$key]['inventory_date'][$i] = $inventoryDate->format('Y-m-d');
                     $inventoryDateArray[$key]['product_name'][$i] = $product->getProductName();
                     $inventoryDateArray[$key]['product_id'][$i] = $product->getProductId();
-                    $inventoryDateArray[$key]['inventory_id'][$i++] = $inventory->getInventoryId();
+                    $inventoryDateArray[$key]['inventory_id'][$i] = $inventory->getInventoryId();
+                    $inventoryDateArray[$key]['quantity_kg'][$i++] = $inventory->getQuantityKg();
                 }
             }
         }
@@ -408,12 +639,22 @@ class FarmerInventoryDetailController extends AbstractController
         $farmer = $farmerInventory->toArray();
         return $farmer;
     }
+    private function getFarmerinventory(DocumentManager $dm, $farmerId)
+    {
+        $farmerInventory = $dm->createQueryBuilder(FarmerProduct::class)
+            ->field('farmerId')->equals($farmerId)
+            ->getQuery()       
+            ->execute();
+        $farmer = $farmerInventory->toArray();
+        return $farmer;
+    }
+
     private function getMayaniRequestData(DocumentManager $dm,$farmerId,$startTime,$endTime)
     {
         $mayaniData = $dm->createQueryBuilder(MayaniInventory::class)
             ->field('farmerBalanceId')->equals($farmerId)
             ->field('b2cProductRequestDate')->range($startTime,$endTime)
-            ->sort('mProductInventoryId','ASC')    
+            ->sort('farmInventoryId','ASC')    
             ->getQuery()
             ->execute();
         $mayani = $mayaniData->toArray();
