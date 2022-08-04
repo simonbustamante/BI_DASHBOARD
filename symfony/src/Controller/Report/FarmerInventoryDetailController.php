@@ -54,7 +54,7 @@ class FarmerInventoryDetailController extends AbstractController
                         //dump($mayaniArray);die();
                     $farmerProducts = $this->getFarmerProduct($dm, $farmerId);
                     
-                    //the current inventory
+                    //the initial  nor the last
                     $realInventory = $this->getFarmerinventory($dm, $farmerId);
                         //dump($realInventory);//die();
 
@@ -65,23 +65,25 @@ class FarmerInventoryDetailController extends AbstractController
                         //dump($inventoryDate);die();
                     $data = $this->getChartInventoryUpdateData($inventoryDate,$farmerProducts,$startDate,$endDate);
                     $farmerInventoryUpdateQuantity = $this->getFarmerProductInventoryUpdate($inventoryArray,$farmerProducts);
-                    $dataTable = $this->generateDataTable($inventoryArray,$request);
-
+                    
                     //second chart and pie chart
                     $chart2 = $this->setChartType($chartBuilder,"TYPE_LINE");
                     $pieChart2 = $this->setChartType($chartBuilder,"TYPE_PIE");
                     $b2cRequests = $this->getMayaniB2cRequestsPerProduct($mayaniArray, $farmerProducts);
-                        //dump($b2cRequests);die();
+                    //dump($b2cRequests);die();
                     $data2 = $this->getChartMayaniB2cRequestData($b2cRequests,$farmerProducts,$startDate,$endDate);
                     $b2cInventoryRequestQuantity = $this->getB2cInventoryRequest($mayaniArray, $farmerProducts);
-
+                    
                     //third chart
                     $chart3 = $this->setChartType($chartBuilder,"TYPE_LINE");
                     $totalInventoryOverTime = $this->getInventoryAndB2cPerProduct($inventoryDate,$b2cRequests,$farmerProducts);
                     $data3 = $this->getChartInventoryLessB2cData($totalInventoryOverTime,$realInventory,$farmerProducts,$startDate,$endDate);
-
                     
-
+                    //tables
+                    $dataTable = $this->generateDataTable($inventoryArray,$request);
+                    $b2cTable = $this->generateDataTable($mayaniArray,$request);
+                    $farmerProductTable = $this->generateDataTable($realInventory,$request);
+                    //dump($b2cTable);dump($farmerProductTable);die();
 
                     $this->addFlash('success','The report has been generated.');
                 }
@@ -99,7 +101,7 @@ class FarmerInventoryDetailController extends AbstractController
             $pieChart = $this->setPieChartData($pieChart,$farmerInventoryUpdateQuantity,'Quantity of inventory updated over time');
             $chart2 = $this->setChartData($chart2, $data2);
             $pieChart2 = $this->setPieChartData($pieChart2,$b2cInventoryRequestQuantity,'Quantity of inventory requested by Mayani');
-            $chart3 = $this->setChartData($chart3, $data3);
+            $chart3 = $this->setChartData($chart3, $data3['data']);
         }
         else{
             $chart = $chartBuilder->createChart(Chart::TYPE_BAR);
@@ -117,6 +119,8 @@ class FarmerInventoryDetailController extends AbstractController
             $realInventory = [];
 
             $dataTable = $this->generateDataTable([],$request);
+            $b2cTable = $this->generateDataTable([],$request);
+            $farmerProductTable = $this->generateDataTable([],$request);
             $startDate = "";
             $endDate = "";
             
@@ -137,6 +141,8 @@ class FarmerInventoryDetailController extends AbstractController
             'quantity_on_mayani' => $pieChart2,
             'real_inventory' => $realInventory,
             'data_table' => $dataTable,
+            'b2c_table' => $b2cTable,
+            'farmer_product_table' => $farmerProductTable,
         ]);
     }
     private function dummyData()
@@ -263,8 +269,10 @@ class FarmerInventoryDetailController extends AbstractController
             foreach($totalInventoryOverTime as $tiotKey => $tiot)
             {   
                 //dump($totalInventoryOverTime);die();
-                $i = 0;
-                $x = 0;
+                //dump($realInventory[$tiotKey]->getInventoryTotalKg());die();
+                //$i = 0;
+                $i = $realInventory[$tiotKey]->getInventoryTotalKg();
+                //$x = 0;
                 foreach($tiot['b2c_and_iupdate'] as $dkey => $dates)
                 {   
                     if($dates == $day)
@@ -305,12 +313,13 @@ class FarmerInventoryDetailController extends AbstractController
                         // {
                         //     $j[$tiotKey] = $j[$tiotKey] + $i;
                         // }
-                        $x++;
+                        //$x++;
                         //dump($i);
                         //dump($j[$tiotKey]);
                         //dump("-------------zzz--------------");    
                     }
                 }
+                $lastValue[$tiotKey] = $j[$tiotKey];
                 $count[$kday][$tiotKey]['count'] = $j[$tiotKey];
                 
                 
@@ -359,7 +368,11 @@ class FarmerInventoryDetailController extends AbstractController
             'labels' => $days,
             'datasets' => $datasets,
         ];
-        return $data;
+        //dump($lastValue);die();
+        return [
+            'data' => $data,
+            'lastValue' => $lastValue
+        ];
     }
     private function getChartMayaniB2cRequestData($b2cRequests,$farmerProducts,$startDate,$endDate)
     {

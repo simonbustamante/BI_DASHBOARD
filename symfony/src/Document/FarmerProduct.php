@@ -39,6 +39,10 @@ class FarmerProduct
     private $activityDescription;
     
 
+    public function __toString()
+    {
+        return $this->farmerId;
+    }
     /**
      * Get the value of farmer_id
      */ 

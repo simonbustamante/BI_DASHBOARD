@@ -1,0 +1,54 @@
+
+<table class="table table-striped table-sm">
+<thead>
+        <tr>
+            <th>
+                {{ knp_pagination_sortable(b2c_table, 'Farmer Id', 'farmerId') }}
+            </th>
+            <th {% if b2c_table.isSorted('farmerBalanceId') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(b2c_table, 'Balance Id', 'farmerBalanceId') }}
+            </th>
+            <th {% if b2c_table.isSorted('b2cProductRequestId') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(b2c_table, 'Request Id', 'b2cProductRequestId') }}
+            </th>
+            <th {% if b2c_table.isSorted('b2cProductRequestDescription') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(b2c_table, 'Description', 'b2cProductRequestDescription') }}
+            </th>
+            <th {% if b2c_table.isSorted('b2cProductRequestKg') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(b2c_table, 'Weight Kg', 'b2cProductRequestKg') }}
+            </th>
+            <th {% if b2c_table.isSorted('b2cProductRequestTotalDebt') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(b2c_table, 'B2c Total Debt', 'b2cProductRequestTotalDebt') }}
+            </th>
+            <th {% if b2c_table.isSorted('b2cProductRequestDate') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(b2c_table, 'Date', 'b2cProductRequestDate') }}
+            </th>
+            <th {% if b2c_table.isSorted('farmInventoryId') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(b2c_table, 'Inventory Id', 'farmInventoryId') }}
+            </th>
+        
+        </tr>
+    </thead>
+    <tbody>
+        {% for data in b2c_table %}
+        <tr>
+            <td>{{data.farmerId}}</td>
+            <td>{{data.farmerBalanceId}}</td>
+            <td>{{data.b2cProductRequestId}}</td>
+            <td>{{data.b2cProductRequestDescription}}</td>
+            <td>{{data.b2cProductRequestKg}}</td>
+            <td>{{data.b2cProductRequestTotalDebt}}</td>
+            <td>{{data.b2cProductRequestDate|date('Y-m-d')}}</td>
+            <td>{{data.farmInventoryId}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="container">
+    <div class="row">
+        <div class="d-flex align-items-center justify-content-center">
+            {{ knp_pagination_render(b2c_table) }}
+        </div>
+    </div>
+</div>

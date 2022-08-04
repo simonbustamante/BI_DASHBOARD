@@ -1,0 +1,74 @@
+
+<table class="table table-striped table-sm">
+<thead>
+        <tr>
+            <th>
+                {{ knp_pagination_sortable(farmer_product_table, 'Farmer Id', 'farmerId') }}
+            </th>
+            <th {% if farmer_product_table.isSorted('inventoryId') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(farmer_product_table, 'Inventory Id', 'inventoryId') }}
+            </th>
+            <th {% if farmer_product_table.isSorted('productId') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(farmer_product_table, 'Product Id', 'productId') }}
+            </th>
+            <th {% if farmer_product_table.isSorted('inventoryDate') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(farmer_product_table, 'Date', 'inventoryDate') }}
+            </th>
+            <th {% if farmer_product_table.isSorted('inventoryTotalCredit') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(farmer_product_table, 'Total Value', 'inventoryTotalCredit') }}
+            </th>
+            <th {% if farmer_product_table.isSorted('inventoryTotalKg') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(farmer_product_table, 'Total Kg', 'inventoryTotalKg') }}
+            </th>
+            <th {% if farmer_product_table.isSorted('inventoryDescription') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(farmer_product_table, 'Description', 'inventoryDescription') }}
+            </th>
+            <th {% if farmer_product_table.isSorted('productName') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(farmer_product_table, 'Product Name', 'productName') }}
+            </th>
+            <th {% if farmer_product_table.isSorted('pricePerKg') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(farmer_product_table, 'Price/Kg', 'pricePerKg') }}
+            </th>
+            <th {% if farmer_product_table.isSorted('kgPerMonth') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(farmer_product_table, 'Kg/Month', 'kgPerMonth') }}
+            </th>
+            <th {% if farmer_product_table.isSorted('activityId') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(farmer_product_table, 'Activity Id', 'activityId') }}
+            </th>
+            <th {% if farmer_product_table.isSorted('activityName') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(farmer_product_table, 'Activity Name', 'activityName') }}
+            </th>
+            <th {% if farmer_product_table.isSorted('activityDescription') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(farmer_product_table, 'Act. Description', 'activityDescription') }}
+            </th>
+        
+        </tr>
+    </thead>
+    <tbody>
+        {% for data in farmer_product_table %}
+        <tr>
+            <td>{{data.farmerId}}</td>
+            <td>{{data.inventoryId}}</td>
+            <td>{{data.productId}}</td>
+            <td>{{data.inventoryDate|date('Y-m-d')}}</td>
+            <td>{{data.inventoryTotalCredit}}</td>
+            <td>{{data.inventoryTotalKg}}</td>
+            <td>{{data.inventoryDescription}}</td>
+            <td>{{data.productName}}</td>
+            <td>{{data.pricePerKg}}</td>
+            <td>{{data.kgPerMonth}}</td>
+            <td>{{data.activityId}}</td>
+            <td>{{data.activityName}}</td>
+            <td>{{data.activityDescription}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="container">
+    <div class="row">
+        <div class="d-flex align-items-center justify-content-center">
+            {{ knp_pagination_render(farmer_product_table) }}
+        </div>
+    </div>
+</div>
