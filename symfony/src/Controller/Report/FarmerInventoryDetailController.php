@@ -123,6 +123,7 @@ class FarmerInventoryDetailController extends AbstractController
             $farmerProductTable = $this->generateDataTable([],$request);
             $startDate = "";
             $endDate = "";
+            $farmerId = "all";
             
         }
         $chart = $this->setChartOptions($chart);
@@ -132,6 +133,7 @@ class FarmerInventoryDetailController extends AbstractController
         $pieChart2 = $this->setChartOptions($pieChart2);
         return $this->render('inventory/farmer-inventory.html.twig', [
             'form' => $form->createView(),
+            'farmerId' => $farmerId,
             'startDate' => $startDate,
             'endDate' => $endDate,
             'inventory_time_line' => $chart,
@@ -144,6 +146,97 @@ class FarmerInventoryDetailController extends AbstractController
             'b2c_table' => $b2cTable,
             'farmer_product_table' => $farmerProductTable,
         ]);
+    }
+    #[Route('/inventory/inv_exp-csv/{farmerId}/{startDate}/{endDate}', name: 'inv_exp_csv')]
+    public function exportInvCsv($farmerId,$startDate,$endDate, DocumentManager $dm)
+    {
+        $rowsInv = array();
+        if($farmerId != "none")
+        {
+            $inventoryArray = $this->getFarmerInventoryUpdate($dm,$farmerId,$startDate,$endDate);
+            foreach($inventoryArray as $inventory)
+            {
+                $inventoryData = array(
+                    $inventory->getFarmerId(),
+                    $inventory->getInventoryUpdateId(),
+                    $inventory->getInventoryId(),
+                    $inventory->getQuantityKg(),
+                    "$".$inventory->getCredit(),
+                    $inventory->getDate()->format('Y-m-d'),
+                );
+                $rowsInv[] = implode(',', $inventoryData);
+            }
+        }
+        $content = implode("\n", $rowsInv);
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'text/csv');
+        return $response;
+    }
+    #[Route('/inventory/b2c_exp-csv/{farmerId}/{startDate}/{endDate}', name: 'b2c_exp_csv')]
+    public function exportB2cCsv($farmerId,$startDate,$endDate, DocumentManager $dm)
+    {
+        //dump($farmerId);
+        //$rows = array();
+        //$rowsInv = array();
+        $rowsMay = array();
+        //$rowsReal = array();
+
+        if($farmerId != "none")
+        {
+            $mayaniArray = $this->getMayaniRequestData($dm,$farmerId,$startDate,$endDate);
+            foreach($mayaniArray as $mayani)
+            {
+                $mayaniData = array(
+                    $mayani->getFarmerId(),
+                    $mayani->getFarmerBalanceId(),
+                    $mayani->getB2cProductRequestId(),
+                    $mayani->getB2cProductRequestDescription(),
+                    $mayani->getB2cProductRequestKg(),
+                    $mayani->getB2cProductRequestTotalDebt(),
+                    $mayani->getB2cProductRequestDate()->format('Y-m-d'),
+                    $mayani->getFarmInventoryId(),
+                );
+                $rowsMay[] = implode(',', $mayaniData);
+            }
+        }
+        $content = implode("\n", $rowsMay);
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'text/csv');
+
+        return $response;
+    }
+    #[Route('/inventory/fp_exp-csv/{farmerId}/{startDate}/{endDate}', name: 'fp_exp_csv')]
+    public function exportFarmerProductCsv($farmerId,$startDate,$endDate, DocumentManager $dm)
+    {
+        $rowsReal = array();
+        if($farmerId != "none")
+        {
+            $realInventory = $this->getFarmerinventory($dm, $farmerId);
+            foreach($realInventory as $real)
+            {
+                $realData = array(
+                    $real->getFarmerId(),
+                    $real->getinventoryId(),
+                    $real->getProductId(),
+                    $real->getInventoryDate(),
+                    $real->getInventoryTotalCredit(),
+                    $real->getInventoryTotalKg(),
+                    $real->getInventoryDescription(),
+                    $real->getProductName(),
+                    $real->getPricePerKg(),
+                    $real->getKgPerMonth(),
+                    $real->getActivityId(),
+                    $real->getActivityName(),
+                    $real->getActivityDescription(),
+                );
+                $rowsReal[] = implode(',', $realData);
+            }
+        }
+        $content = implode("\n", $rowsReal);
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'text/csv');
+
+        return $response;
     }
     private function dummyData()
     {   
@@ -241,7 +334,6 @@ class FarmerInventoryDetailController extends AbstractController
         }         
         return $productList;
     }
-
     private function getFarmerProduct(DocumentManager $dm, $farmerId)
     {
         $farmerProducts = $dm->createQueryBuilder(FarmerProduct::class)
@@ -639,8 +731,7 @@ class FarmerInventoryDetailController extends AbstractController
         //dump($inventoryArray);dump($farmerProducts); dump($inventoryDateArray);die();
 
         return $inventoryDateArray; 
-    }
-    
+    }    
     private function getFarmerInventoryUpdate(DocumentManager $dm,$farmerId, $startTime, $endTime)
     {
         $farmerInventory = $dm->createQueryBuilder(FarmerInventoryUpdate::class)
@@ -661,7 +752,6 @@ class FarmerInventoryDetailController extends AbstractController
         $farmer = $farmerInventory->toArray();
         return $farmer;
     }
-
     private function getMayaniRequestData(DocumentManager $dm,$farmerId,$startTime,$endTime)
     {
         $mayaniData = $dm->createQueryBuilder(MayaniInventory::class)

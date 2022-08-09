@@ -19,11 +19,11 @@
                                 Print All
                             </button>
                         </a>
-                        <a href="">
+                        {# <a href="{{path('inv_exp_csv',{'farmerId':farmerId, 'startDate':startDate|date('Y-m-d') , 'endDate':endDate|date('Y-m-d') })}}">
                             <button type="button" class="btn btn-sm btn-outline-secondary">
-                                Export All Tables CSV
+                                Export CSV
                             </button>
-                        </a>
+                        </a> #}
                     </div>
                 </div>
             </div>
@@ -35,6 +35,13 @@
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h5">Quantity (Kg) of inventory update over time</h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
+                    {# <div class="btn-group me-2">
+                        <a href="{{path('inv_exp_csv',{'farmerId':farmerId, 'startDate':startDate|date('Y-m-d') , 'endDate':endDate|date('Y-m-d') })}}">
+                            <button type="button" class="btn btn-sm btn-outline-secondary">
+                                Export CSV
+                            </button>
+                        </a>
+                    </div> #}
                 </div>
             </div>
             <div class="p-5">
@@ -47,21 +54,15 @@
         <div class="col-8">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h5">Mayani inventory request over time</h1>
-                {# <div class="btn-toolbar mb-2 mb-md-0">
-                    <div class="btn-group me-2">
-                
-                        <a href="">
-                            <button onclick="window.print()" type="button" class="btn btn-sm btn-outline-secondary">
-                                Print PDF
-                            </button>
-                        </a>
-                        <a href="">
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    {# <div class="btn-group me-2">
+                        <a href="{{path('b2c_exp_csv',{'farmerId':farmerId, 'startDate':startDate|date('Y-m-d') , 'endDate':endDate|date('Y-m-d') })}}">
                             <button type="button" class="btn btn-sm btn-outline-secondary">
                                 Export CSV
                             </button>
                         </a>
-                    </div>
-                </div> #}
+                    </div> #}
+                </div>
             </div>
             <div class="p-5">
                 {{ render_chart(b2c_time_line, {'id': 'b2c_time_line','name' :'b2c_time_line'}) }}
@@ -71,6 +72,13 @@
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h5">Quantity (Kg) of inventory on Mayani</h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
+                    {# <div class="btn-group me-2">
+                        <a href="{{path('fp_exp_csv',{'farmerId':farmerId, 'startDate':startDate|date('Y-m-d') , 'endDate':endDate|date('Y-m-d') })}}">
+                            <button type="button" class="btn btn-sm btn-outline-secondary">
+                                Export CSV
+                            </button>
+                        </a>
+                    </div> #}
                 </div>
             </div>
             <div class="p-5">
@@ -123,7 +131,13 @@
      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h5>Inventory Update Table</h5>
         <div class="btn-toolbar mb-2 mb-md-0">
-            
+            <div class="btn-group me-2">
+                <a href="{{path('inv_exp_csv',{'farmerId':farmerId, 'startDate':startDate|date('Y-m-d') , 'endDate':endDate|date('Y-m-d') })}}">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">
+                        Export CSV
+                    </button>
+                </a>
+            </div>
         </div>
     </div>
     <div class="table-responsive">
@@ -133,7 +147,13 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h5>Mayani Inventory Process Table</h5>
         <div class="btn-toolbar mb-2 mb-md-0">
-            
+            <div class="btn-group me-2">
+                <a href="{{path('b2c_exp_csv',{'farmerId':farmerId, 'startDate':startDate|date('Y-m-d') , 'endDate':endDate|date('Y-m-d') })}}">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">
+                        Export CSV
+                    </button>
+                </a>
+            </div>
         </div>
     </div>
     <div class="table-responsive">
@@ -143,7 +163,13 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h5>Farmer Product Table</h5>
         <div class="btn-toolbar mb-2 mb-md-0">
-            
+            <div class="btn-group me-2">
+                <a href="{{path('fp_exp_csv',{'farmerId':farmerId, 'startDate':startDate|date('Y-m-d') , 'endDate':endDate|date('Y-m-d') })}}">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">
+                        Export CSV
+                    </button>
+                </a>
+            </div>
         </div>
     </div>
     <div class="table-responsive">

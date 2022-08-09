@@ -117,7 +117,7 @@ class SalesQuantityController extends AbstractController
     #[Route('/exp-csv/{farmerId}/{startDate}/{endDate}', name: 'exp_csv')]
     public function exportCsv($farmerId,$startDate,$endDate, DocumentManager $dm)
     {
-        dump($farmerId);
+        //dump($farmerId);
         $rows = array();
         if($farmerId != "none")
         {
@@ -159,8 +159,6 @@ class SalesQuantityController extends AbstractController
 
         return $data;
     }
-
-
     private function getFarmerProductSales($sellArray)
     {
         $i = 0;
@@ -191,15 +189,12 @@ class SalesQuantityController extends AbstractController
             
         return $productList;
     }
-    
-
     private function generateDataTable($farmerSell,$request)
     {
         $limit = "10";
         $page = $request->query->getInt('page',1);
         return $this->paginator->paginate($farmerSell,$page,$limit);
     }
-
     private function generateProductData($sellArray,$farmerId,$dm)
     {
         $i = 0;
@@ -255,7 +250,6 @@ class SalesQuantityController extends AbstractController
         
         return $finalList;
     }
-
     private function getChartSalesQuantity($array,$startDate, $endDate)
     {
         $period = new DatePeriod($startDate,new DateInterval('P1D'),$endDate);
@@ -282,7 +276,6 @@ class SalesQuantityController extends AbstractController
             'data' => $count
         ];
     }
-
     private function arrangePieChartProductSales($farmerProducts)
     {
         dump($farmerProducts);die();
@@ -296,7 +289,6 @@ class SalesQuantityController extends AbstractController
             'data' => $data
         ];
     }
-
     private function getAllFarmerSellDetail(DocumentManager $dm, $startTime, $endTime)
     {
         $farmerSell = $dm->createQueryBuilder(FarmerSellDetail::class)
@@ -307,7 +299,6 @@ class SalesQuantityController extends AbstractController
         return $farmer;
 
     }
-
     private function getFarmerInvoicesDates($sellArray)
     {
         $i = 0;
@@ -319,7 +310,6 @@ class SalesQuantityController extends AbstractController
         }
         return $invoiceDates; 
     }
-
     private function getFarmerSellDetail(DocumentManager $dm,$farmerId, $startTime, $endTime)
     {
         $farmerSell = $dm->createQueryBuilder(FarmerSellDetail::class)
@@ -332,7 +322,6 @@ class SalesQuantityController extends AbstractController
         return $farmer;
 
     }
-
     private function getFarmerProductDescription(DocumentManager $dm, $farmerId)
     {
         $farmerProducts = $dm->createQueryBuilder(FarmerProduct::class)
@@ -343,7 +332,6 @@ class SalesQuantityController extends AbstractController
         $farmerProducts = $farmerProducts->toArray();
         return $farmerProducts;
     }
-
     private function setChartData(Chart $chart, $reportName, $labels = [], $data = [], $backC = 'rgb(255, 99, 132)', $borderC = 'rgb(255, 99, 132)')
     {
         $chart->setData([
@@ -400,7 +388,6 @@ class SalesQuantityController extends AbstractController
 
         return $chart;
     }
-
     private function setChartOptions($chart, $min = 0, $max = 4)
     {
         $chart->setOptions([
@@ -414,7 +401,6 @@ class SalesQuantityController extends AbstractController
 
         return $chart;
     }
-
     private function setChartType(ChartBuilderInterface $chartBuilder, $chartType)
     {
         if($chartType == 'TYPE_LINE')
